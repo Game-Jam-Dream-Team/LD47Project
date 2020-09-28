@@ -1,0 +1,14 @@
+.DS_Store
+.tmp
+Build
+.idea
+BuildPipeline/bin
+BuildPipeline/obj
+*.DotSettings
+Library
+Logs
+UserSettings
+Assembly-CSharp-Editor.csproj
+Assembly-CSharp.csproj
+LD47Project.sln
+Temp
