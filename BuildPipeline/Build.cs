@@ -21,8 +21,21 @@ class Build : NukeBuild {
 			proc.WaitForExit();
 		});
 
+	Target Publish => _ => _
+		.Executes(() => {
+			var toolPath = GetButlerPath();
+			var version = GetProjectVersion();
+			var target = "konh/ld47project:html";
+			var targetDir = RootDirectory / "Build";
+			var proc = ProcessTasks.StartProcess(toolPath, $"push --userversion={version} --verbose {targetDir} {target}");
+			proc.WaitForExit();
+		});
+
 	string GetUnityPath() =>
 		"/Applications/Unity/Hub/Editor/2020.1.6f1/Unity.app/Contents/MacOS/Unity";
+
+	string GetButlerPath() =>
+		RootDirectory / "Butler" / "MacOS" / "butler";
 
 	string GetProjectVersion() {
 		var lines = File.ReadAllLines(RootDirectory / "ProjectSettings/ProjectSettings.asset");
