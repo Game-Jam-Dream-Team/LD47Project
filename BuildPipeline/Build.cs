@@ -32,10 +32,14 @@ class Build : NukeBuild {
 		});
 
 	string GetUnityPath() =>
-		"/Applications/Unity/Hub/Editor/2020.1.6f1/Unity.app/Contents/MacOS/Unity";
+		EnvironmentInfo.IsWin
+			? "C:/Program Files/Unity/Hub/Editor/2020.1.6f1/Editor/Unity.exe"
+			: "/Applications/Unity/Hub/Editor/2020.1.6f1/Unity.app/Contents/MacOS/Unity";
 
 	string GetButlerPath() =>
-		RootDirectory / "Butler" / "MacOS" / "butler";
+		EnvironmentInfo.IsWin 
+			? RootDirectory / "Butler" / "Win" / "butler.exe"
+			: RootDirectory / "Butler" / "MacOS" / "butler";
 
 	string GetProjectVersion() {
 		var lines = File.ReadAllLines(RootDirectory / "ProjectSettings/ProjectSettings.asset");
