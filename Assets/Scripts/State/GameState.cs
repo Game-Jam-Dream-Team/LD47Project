@@ -1,7 +1,8 @@
 using System.Collections.Generic;
 
 public sealed class GameState : Singleton<GameState> {
-	public TweetsController TweetsController { get; private set; }
+	public TweetsController       TweetsController   { get; private set; }
+	public ProgressController ProgressController { get; private set; }
 
 	readonly List<BaseController> _controllers = new List<BaseController>();
 
@@ -21,7 +22,9 @@ public sealed class GameState : Singleton<GameState> {
 	}
 
 	void AddControllers() {
-		TweetsController = AddController(new TweetsController());
+		var unityContext = UnityContext.Instance;
+		TweetsController   = AddController(new TweetsController());
+		ProgressController = AddController(new ProgressController(unityContext));
 	}
 
 	T AddController<T>(T controller) where T : BaseController {
