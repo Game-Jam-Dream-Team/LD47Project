@@ -3,6 +3,7 @@ using UnityEngine.UI;
 
 using System;
 
+using JetBrains.Annotations;
 using TMPro;
 
 public sealed class TweetView : MonoBehaviour {
@@ -22,6 +23,8 @@ public sealed class TweetView : MonoBehaviour {
 
 	Tweet _tweet;
 
+	SenderCollection _senderCollection;
+
 	void OnDestroy() {
 		if ( _tweet != null ) {
 			_tweet.OnCommentsCountChanged -= UpdateCommentsCount;
@@ -30,10 +33,36 @@ public sealed class TweetView : MonoBehaviour {
 		}
 	}
 
-	public void Init(Tweet tweet, SenderCollection senderCollection) {
+	void OnEnable() {
+		CommonInit(Resources.Load<SenderCollection>("SenderCollection"));
+	}
+
+	[UsedImplicitly]
+	public void ScrollCellIndex(int index) {
+		if ( _tweet != null ) {
+			DeinitTweet();
+		}
+		var tc = GameState.Instance.TweetsController;
+		while ( index < 0 ) {
+			index += tc.TweetsCount;
+		}
+		index %= tc.TweetsCount;
+		var tweet = tc.GetTweet(index);
+		InitTweet(tweet);
+	}
+
+	void CommonInit(SenderCollection senderCollection) {
+		_senderCollection = senderCollection;
+
+		CommentButton.onClick.AddListener(OnCommentsClick);
+		LikeButton.onClick.AddListener(OnLikesClick);
+		RetweetButton.onClick.AddListener(OnRetweetsClick);
+	}
+
+	void InitTweet(Tweet tweet) {
 		_tweet = tweet;
 
-		var senderInfo = senderCollection.GetSenderInfo(_tweet.SenderId);
+		var senderInfo = _senderCollection.GetSenderInfo(_tweet.SenderId);
 		Avatar.sprite = senderInfo.Avatar;
 		InitSender(senderInfo.DisplayName);
 		MessageText.text = _tweet.Message;
@@ -48,13 +77,19 @@ public sealed class TweetView : MonoBehaviour {
 			// TODO: init tweet image
 		}
 
-		CommentButton.onClick.AddListener(OnCommentsClick);
-		LikeButton.onClick.AddListener(OnLikesClick);
-		RetweetButton.onClick.AddListener(OnRetweetsClick);
-
 		_tweet.OnCommentsCountChanged += UpdateCommentsCount;
 		_tweet.OnLikesCountChanged    += UpdateLikesCount;
 		_tweet.OnRetweetsCountChanged += UpdateRetweetsCount;
+	}
+
+	void DeinitTweet() {
+		if ( _tweet != null ) {
+			_tweet.OnCommentsCountChanged -= UpdateCommentsCount;
+			_tweet.OnLikesCountChanged    -= UpdateLikesCount;
+			_tweet.OnRetweetsCountChanged -= UpdateRetweetsCount;
+
+			_tweet = null;
+		}
 	}
 
 	void InitSender(string displayName) {

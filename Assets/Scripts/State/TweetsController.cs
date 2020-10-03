@@ -26,7 +26,8 @@ public sealed class TweetsController : BaseController {
 
 	float _timer;
 
-	public List<Tweet> Tweets => new List<Tweet>(_tweets);
+	public int         TweetsCount => _tweets.Count;
+	public List<Tweet> Tweets      => new List<Tweet>(_tweets);
 
 	public override void Init() {
 		LoadTweets();
@@ -49,6 +50,10 @@ public sealed class TweetsController : BaseController {
 			}
 			_timer -= UpdateInterval;
 		}
+	}
+
+	public Tweet GetTweet(int index) {
+		return _tweets[index];
 	}
 
 	void LoadTweets() {
