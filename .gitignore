@@ -12,3 +12,5 @@ Assembly-CSharp-Editor.csproj
 Assembly-CSharp.csproj
 LD47Project.sln
 Temp
+Server/bin
+Server/obj
