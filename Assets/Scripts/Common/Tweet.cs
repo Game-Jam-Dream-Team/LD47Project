@@ -4,7 +4,7 @@ public sealed class Tweet {
 	public readonly int    Id;
 	public readonly int    SenderId;
 	public readonly string Message;
-	public readonly string ImageId;
+	public readonly int    ImageId;
 
 	int _commentsCount;
 	int _likesCount;
@@ -47,7 +47,7 @@ public sealed class Tweet {
 	public event Action<int> OnLikesCountChanged;
 	public event Action<int> OnRetweetsCountChanged;
 
-	public Tweet(int id, int senderId, string message, string imageId = null) {
+	public Tweet(int id, int senderId, string message, int imageId) {
 		Id       = id;
 		SenderId = senderId;
 		Message  = message;

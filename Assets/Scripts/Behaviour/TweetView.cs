@@ -23,7 +23,9 @@ public sealed class TweetView : MonoBehaviour {
 
 	Tweet _tweet;
 
-	SenderCollection _senderCollection;
+	bool                   _isCommonInit;
+	SenderCollection       _senderCollection;
+	TweetSpritesCollection _tweetSpritesCollection;
 
 	void OnDestroy() {
 		if ( _tweet != null ) {
@@ -34,7 +36,7 @@ public sealed class TweetView : MonoBehaviour {
 	}
 
 	void OnEnable() {
-		CommonInit(Resources.Load<SenderCollection>("SenderCollection"));
+		TryCommonInit();
 	}
 
 	[UsedImplicitly]
@@ -49,14 +51,22 @@ public sealed class TweetView : MonoBehaviour {
 		index %= tc.TweetsCount;
 		var tweet = tc.GetTweet(index);
 		InitTweet(tweet);
+		LayoutRebuilder.ForceRebuildLayoutImmediate(transform.parent as RectTransform);
 	}
 
-	void CommonInit(SenderCollection senderCollection) {
-		_senderCollection = senderCollection;
+	void TryCommonInit() {
+		if ( _isCommonInit ) {
+			return;
+		}
+
+		_senderCollection       = Resources.Load<SenderCollection>("SenderCollection");
+		_tweetSpritesCollection = Resources.Load<TweetSpritesCollection>("TweetSpritesCollection");
 
 		CommentButton.onClick.AddListener(OnCommentsClick);
 		LikeButton.onClick.AddListener(OnLikesClick);
 		RetweetButton.onClick.AddListener(OnRetweetsClick);
+
+		_isCommonInit = true;
 	}
 
 	void InitTweet(Tweet tweet) {
@@ -70,11 +80,11 @@ public sealed class TweetView : MonoBehaviour {
 		UpdateLikesCount(_tweet.LikesCount);
 		UpdateRetweetsCount(_tweet.RetweetsCount);
 
-		if ( string.IsNullOrEmpty(_tweet.ImageId) ) {
+		if ( _tweet.ImageId == -1 ) {
 			TweetImageRoot.SetActive(false);
 		} else {
 			TweetImageRoot.SetActive(true);
-			// TODO: init tweet image
+			TweetImage.sprite = _tweetSpritesCollection.GetTweetSprite(_tweet.ImageId);
 		}
 
 		_tweet.OnCommentsCountChanged += UpdateCommentsCount;

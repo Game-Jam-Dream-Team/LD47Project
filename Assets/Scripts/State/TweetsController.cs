@@ -71,26 +71,35 @@ public sealed class TweetsController : BaseController {
 			return;
 		}
 		var composedTweetMessage = new StringBuilder();
-		var tweetSender          = -1;
+		var tweetSenderId        = -1;
+		var tweetImageId         = -1;
 		using ( var sr = new StringReader(tweetsContainer.text) ) {
 			while ( true ) {
 				var line = sr.ReadLine();
 				if ( line == null ) {
 					if ( composedTweetMessage.Length > 0 ) {
 						var message = composedTweetMessage.ToString();
-						AddTweet(tweetSender, message);
+						AddTweet(tweetSenderId, message, tweetImageId);
 					}
 					break;
 				}
 				if ( line == Separator ) {
 					if ( composedTweetMessage.Length > 0 ) {
 						var message = composedTweetMessage.ToString();
-						AddTweet(tweetSender, message);
+						AddTweet(tweetSenderId, message, tweetImageId);
 						composedTweetMessage.Clear();
-						tweetSender = -1;
+						tweetSenderId = -1;
+						tweetImageId  = -1;
 					}
 				} else {
-					if ( (tweetSender == -1) && (int.TryParse(line, out tweetSender)) ) {
+					if ( tweetSenderId == -1  ) {
+						if ( !int.TryParse(line, out tweetSenderId) ) {
+							var split = line.Split('|');
+							if ( (split.Length != 2) || !int.TryParse(split[0], out tweetSenderId) ||
+							     !int.TryParse(split[1], out tweetImageId) ) {
+								Debug.LogErrorFormat("Can't parse first tweet line '{0}'", line);
+							}
+						}
 					} else {
 						composedTweetMessage.AppendLine(line);
 					}
@@ -99,9 +108,9 @@ public sealed class TweetsController : BaseController {
 		}
 	}
 
-	void AddTweet(int senderId, string message) {
+	void AddTweet(int senderId, string message, int imageId) {
 		var id    = message.GetHashCode();
-		var tweet = new Tweet(id, senderId, message);
+		var tweet = new Tweet(id, senderId, message, imageId);
 		_tweets.Add(tweet);
 	}
 }
