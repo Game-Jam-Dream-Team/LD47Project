@@ -5,33 +5,31 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.Networking;
 
-public sealed class GameProgressService : MonoBehaviour {
-	static GameProgressService _instance;
-
-	public static GameProgressService Instance {
-		get {
-			if ( !_instance ) {
-				var go = new GameObject("[GameProgressService]");
-				_instance = go.AddComponent<GameProgressService>();
-				DontDestroyOnLoad(go);
-			}
-			return _instance;
-		}
-	}
-
+public sealed class ProgressController : BaseController {
 	const string Url = "https://konhit.xyz/ld47server";
+
+	readonly UnityContext _unityContext;
 
 	string _sessionId;
 
-	public void StartGame() {
-		_sessionId = Guid.NewGuid().ToString();
-		StartCoroutine(StartGameRoutine(_sessionId));
+	public ProgressController(UnityContext unityContext) {
+		_unityContext = unityContext;
 	}
 
-	public void FinishGame(string variant, Action onFinished) => StartCoroutine(FinishGameRoutine(_sessionId, variant, onFinished));
+	public override void Init() {
+		StartGame();
+	}
+
+	public void StartGame() {
+		_sessionId = Guid.NewGuid().ToString();
+		_unityContext.StartCoroutine(StartGameRoutine(_sessionId));
+	}
+
+	public void FinishGame(string variant, Action onFinished) =>
+		_unityContext.StartCoroutine(FinishGameRoutine(_sessionId, variant, onFinished));
 
 	public void RequestSummary(Action<Dictionary<string, int>> onFinished) =>
-		StartCoroutine(RequestSummaryRoutine(onFinished));
+		_unityContext.StartCoroutine(RequestSummaryRoutine(onFinished));
 
 	IEnumerator StartGameRoutine(string sessionId) {
 		var req = UnityWebRequest.Post($"{Url}/start?sessionId={sessionId}", string.Empty);
