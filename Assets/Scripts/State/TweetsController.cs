@@ -13,12 +13,13 @@ public sealed class TweetsController : BaseController {
 	const float  UpdateInterval            = 1f;
 
 	readonly Dictionary<TweetType, string> _tweetTypeToPathPostfix = new Dictionary<TweetType, string> {
-		{ TweetType.Filler,  "Filler" },
-		{ TweetType.Popular, "Popular" },
-		{ TweetType.Hacker,  "Hacker" },
-		{ TweetType.Theme1,  "Theme1" },
-		{ TweetType.Theme2,  "Theme2" },
-		{ TweetType.Theme3,  "Theme3" },
+		{ TweetType.Filler,    "Filler" },
+		{ TweetType.Generated, "Generated" },
+		{ TweetType.Popular,   "Popular" },
+		{ TweetType.Hacker,    "Hacker" },
+		{ TweetType.Theme1,    "Theme1" },
+		{ TweetType.Theme2,    "Theme2" },
+		{ TweetType.Theme3,    "Theme3" },
 	};
 
 	readonly List<Tweet> _tweets = new List<Tweet>();
