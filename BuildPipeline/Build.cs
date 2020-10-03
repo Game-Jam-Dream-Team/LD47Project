@@ -81,7 +81,7 @@ class Build : NukeBuild {
 		.Executes(() => {
 			var buildConfigurationDir = RootDirectory / ServerProject / "bin" / "Release";
 			var buildDir              = GetBuildDir(buildConfigurationDir);
-			var targetPath            = (AbsolutePath) LocalPiHome / ServerProject;
+			var targetPath            = (AbsolutePath) LocalPiHome / "LD47Server";
 			var sourceDirPath         = buildDir / "linux-arm" / "publish";
 			CopyDirectoryRecursively(sourceDirPath, targetPath,
 				DirectoryExistsPolicy.Merge, FileExistsPolicy.OverwriteIfNewer);
@@ -122,7 +122,7 @@ class Build : NukeBuild {
 			: "/Applications/Unity/Hub/Editor/2020.1.6f1/Unity.app/Contents/MacOS/Unity";
 
 	string GetButlerPath() =>
-		EnvironmentInfo.IsWin 
+		EnvironmentInfo.IsWin
 			? RootDirectory / "Butler" / "Win" / "butler.exe"
 			: RootDirectory / "Butler" / "MacOS" / "butler";
 
