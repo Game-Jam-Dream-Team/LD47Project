@@ -1,0 +1,57 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 30511b85ae8e449e842ac839a1f791d3, type: 3}
+  m_Name: SenderCollection
+  m_EditorClassIdentifier: 
+  SenderInfos:
+  - DisplayName: Andrew @SalmonTuna
+    Id: 1
+    Avatar: {fileID: 0}
+  - DisplayName: Henry @Theimposter
+    Id: 2
+    Avatar: {fileID: 0}
+  - DisplayName: Tom Fisher @Tomtomato
+    Id: 3
+    Avatar: {fileID: 0}
+  - DisplayName: Essie@mademoisellecat
+    Id: 4
+    Avatar: {fileID: 0}
+  - DisplayName: Stephen Hall @Madeforlove
+    Id: 5
+    Avatar: {fileID: 0}
+  - DisplayName: Book lover @wildtime_84
+    Id: 6
+    Avatar: {fileID: 0}
+  - DisplayName: New York News @NYbreakingnews
+    Id: 7
+    Avatar: {fileID: 0}
+  - DisplayName: Amy @Cherry_Blossom
+    Id: 8
+    Avatar: {fileID: 0}
+  - DisplayName: Fat donut @Thickboy
+    Id: 9
+    Avatar: {fileID: 0}
+  - DisplayName: Carlos @carlitos69
+    Id: 10
+    Avatar: {fileID: 0}
+  - DisplayName: Dula Deep@Legendaryrat06
+    Id: 11
+    Avatar: {fileID: 0}
+  - DisplayName: Internet baby @LouWin
+    Id: 12
+    Avatar: {fileID: 0}
+  - DisplayName: Sarah @Sarah228
+    Id: 13
+    Avatar: {fileID: 0}
+  - DisplayName: Basketball News @Basketballnews
+    Id: 14
+    Avatar: {fileID: 0}
