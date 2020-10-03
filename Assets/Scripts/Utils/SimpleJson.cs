@@ -885,7 +885,7 @@ namespace SimpleJSON
                     m_Dict.Add(aKey, aItem);
             }
             else
-                m_Dict.Add(Guid.NewGuid().ToString(), aItem);
+                m_Dict.Add(string.Empty, aItem);
         }
 
         public override JSONNode Remove(string aKey)
