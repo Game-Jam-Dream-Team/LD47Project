@@ -1,14 +1,11 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.Networking;
 
 public sealed class GameProgressService : MonoBehaviour {
-	sealed class Summary {
-		public Dictionary<string, int> Results = new Dictionary<string, int>();
-	}
-
 	static GameProgressService _instance;
 
 	public static GameProgressService Instance {
@@ -57,8 +54,9 @@ public sealed class GameProgressService : MonoBehaviour {
 			onFinished(new Dictionary<string, int>());
 			yield break;
 		}
-		var text = req.downloadHandler.text;
-		var summary = JsonUtility.FromJson<Summary>(text);
-		onFinished(summary.Results);
+		var text    = req.downloadHandler.text;
+		var jNode   = SimpleJSON.JSON.Parse(text);
+		var results = jNode["results"].Linq.ToDictionary(p => p.Key, p => int.Parse(p.Value));
+		onFinished(results);
 	}
 }
