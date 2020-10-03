@@ -1,0 +1,13 @@
+[Unit]
+Description=LD 47 Server
+
+[Service]
+ExecStart=/share/LD47Server/Server
+WorkingDirectory=/share/LD47Server
+User=root
+Group=root
+Restart=on-failure
+SyslogIdentifier=ld47server
+
+[Install]
+WantedBy=multi-user.target
