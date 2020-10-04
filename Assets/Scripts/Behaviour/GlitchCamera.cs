@@ -20,11 +20,13 @@ namespace Game.Behaviour {
 
 		void Update() {
 			_timer += Time.deltaTime;
-			if ( _timer < UpdateInterval ) {
+			var gc = GameState.Instance.GlitchController;
+			if ( (_timer < UpdateInterval) && gc.IsOneShootHandled) {
 				return;
 			}
-			_timer -= UpdateInterval;
-			var level = GameState.Instance.GlitchController.CurrentLevel * 3;
+			_timer = 0;
+			gc.IsOneShootHandled = true;
+			var level = gc.CurrentLevel * 3;
 			_analog.colorDrift     = Random.Range(0, level);
 			_analog.scanLineJitter = Random.Range(0, level - _analog.colorDrift);
 			_digital.intensity     = Random.Range(0, level - _analog.colorDrift - _analog.scanLineJitter);

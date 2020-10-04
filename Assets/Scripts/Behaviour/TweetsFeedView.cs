@@ -1,3 +1,4 @@
+using Game.State;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -14,6 +15,11 @@ namespace Game.Behaviour {
 
 		void Start() {
 			Refill();
+			GameState.Instance.QuestController.TweetsUpdated += Refill;
+		}
+
+		void OnDestroy() {
+			GameState.Instance.QuestController.TweetsUpdated -= Refill;
 		}
 
 		void Refill() {

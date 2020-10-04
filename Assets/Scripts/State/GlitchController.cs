@@ -8,6 +8,8 @@ namespace Game.State {
 
 		public float CurrentLevel => Mathf.Clamp01(_baseLevel + _oneShotLevel);
 
+		public bool IsOneShootHandled;
+
 		public void AddConstantly(float value) {
 			_baseLevel += value;
 		}
@@ -15,6 +17,7 @@ namespace Game.State {
 		public void AddOneShot(float value, float duration) {
 			_oneShotLevel    += value;
 			_oneShotDuration += duration;
+			IsOneShootHandled = false;
 		}
 
 		public override void Update() {
