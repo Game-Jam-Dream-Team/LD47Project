@@ -1,6 +1,7 @@
 using Game.Common;
 using Game.State;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace Game.Behaviour {
 	public sealed class CommentsScreenController : MonoBehaviour {
@@ -17,6 +18,7 @@ namespace Game.Behaviour {
 
 			MainTweetView.TryCommonInit();
 			MainTweetView.InitTweet(GameState.Instance.TweetsController, mainTweet);
+			LayoutRebuilder.ForceRebuildLayoutImmediate(MainTweetView.transform as RectTransform);
 
 			CommentsFeedView.InitTweet(mainTweet);
 			PlayerCommentView.InitTweet(mainTweet);

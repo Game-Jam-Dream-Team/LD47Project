@@ -715,6 +715,10 @@ PrefabInstance:
       propertyPath: m_SizeDelta.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6495407837550903593, guid: c22c0e82dd31a45eba99f1ab1008a327, type: 3}
+      propertyPath: BackButton
+      value: 
+      objectReference: {fileID: 8489345068138655040}
     - target: {fileID: 6771255952035505708, guid: c22c0e82dd31a45eba99f1ab1008a327, type: 3}
       propertyPath: m_AnchorMin.y
       value: 0
@@ -1025,11 +1029,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8736940922319439350, guid: c22c0e82dd31a45eba99f1ab1008a327, type: 3}
       propertyPath: m_AnchorMin.y
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8736940922319439350, guid: c22c0e82dd31a45eba99f1ab1008a327, type: 3}
       propertyPath: m_AnchorMax.y
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8736940922319439350, guid: c22c0e82dd31a45eba99f1ab1008a327, type: 3}
       propertyPath: m_SizeDelta.x
@@ -1037,7 +1041,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8736940922319439350, guid: c22c0e82dd31a45eba99f1ab1008a327, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 0
+      value: -10
       objectReference: {fileID: 0}
     - target: {fileID: 8810721654425592888, guid: c22c0e82dd31a45eba99f1ab1008a327, type: 3}
       propertyPath: m_AnchoredPosition.x
@@ -1180,3 +1184,14 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 2872634886839414910, guid: 6675731715b924668a696f914661af55, type: 3}
   m_PrefabInstance: {fileID: 8469922175330118572}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &8489345068138655040 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 25617571577267948, guid: 6675731715b924668a696f914661af55, type: 3}
+  m_PrefabInstance: {fileID: 8469922175330118572}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

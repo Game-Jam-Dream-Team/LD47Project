@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.UI;
 
 using DG.Tweening;
 using Game.Common;
@@ -9,16 +10,23 @@ namespace Game.Behaviour {
 		const float ShowCommentsAnimDuration = 0.5f;
 		const float HideCommentsAnimDuration = 0.5f;
 
-		public         TweetsFeedView           TweetsFeedView;
-		public         CommentsScreenController CommentsScreenController;
-		[Space] public RectTransform            TweetsFeedViewRoot;
-		public         RectTransform            TweetsFeedViewRootShowPos;
-		public         RectTransform            TweetsFeedViewRootHidePos;
-		[Space] public RectTransform            CommentsScreenRoot;
-		public         RectTransform            CommentsScreenRootShowPos;
-		public         RectTransform            CommentsScreenRootHidePos;
+		public TweetsFeedView           TweetsFeedView;
+		public CommentsScreenController CommentsScreenController;
+		public Button                   BackButton;
+		[Space]
+		public RectTransform TweetsFeedViewRoot;
+		public RectTransform TweetsFeedViewRootShowPos;
+		public RectTransform TweetsFeedViewRootHidePos;
+		[Space]
+		public RectTransform CommentsScreenRoot;
+		public RectTransform CommentsScreenRootShowPos;
+		public RectTransform CommentsScreenRootHidePos;
 
 		Tween _curAnim;
+
+		void Start() {
+			BackButton.onClick.AddListener(TryHideCommentsScreen);
+		}
 
 		[UsedImplicitly]
 		public void TryShowCommentsScreen(Tweet mainTweet) {
