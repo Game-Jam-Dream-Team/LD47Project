@@ -8,9 +8,5 @@ namespace Game.Behaviour {
 		void OnEnable() {
 			GameState.EnsureExists();
 		}
-
-		void Start() {
-			TweetsFeedView.Init();
-		}
 	}
 }

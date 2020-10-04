@@ -113,7 +113,7 @@ namespace Game.Behaviour {
 			LayoutRebuilder.ForceRebuildLayoutImmediate(transform.parent as RectTransform);
 		}
 
-		void InitReply(Tweet tweet) {
+		public void InitReply(Tweet tweet) {
 			TweetRoot.SetActive(false);
 			ReplyRoot.SetActive(true);
 			PlayerCommentView.InitTweet(tweet);
@@ -197,6 +197,14 @@ namespace Game.Behaviour {
 			}
 		}
 
+		public float GetHeight() {
+			LayoutRebuilder.ForceRebuildLayoutImmediate(transform as RectTransform);
+			if ( TweetRoot.activeSelf ) {
+				return 150f + MessageText.preferredHeight + 10f + (TweetImageRoot.activeSelf ? 205f : 0f);
+			}
+			return 105f;
+		}
+
 		void InitSender(string displayName) {
 			var index = displayName.IndexOf("@", StringComparison.InvariantCulture);
 			if ( index > 0 ) {
@@ -224,7 +232,7 @@ namespace Game.Behaviour {
 			var questController  = _questController;
 			DeinitTweet();
 			InitTweet(tweetsController, questController, tweet);
-			SendMessageUpwards("UpdateLayout", SendMessageOptions.DontRequireReceiver);
+			SendMessageUpwards("UpdateLayoutDelayed", SendMessageOptions.DontRequireReceiver);
 		}
 
 		void UpdateLikesCount(int likesCount) {

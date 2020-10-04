@@ -40,7 +40,7 @@ namespace Game.Behaviour {
 			var tweet = new Tweet(tweetId, type, senderId, message, -1, new List<int>());
 			GameState.Instance.TweetsController.AddComment(_mainTweet, tweet);
 			InputField.text = string.Empty;
-			SendMessageUpwards("UpdateLayout", SendMessageOptions.DontRequireReceiver);
+			SendMessageUpwards("UpdateLayoutDelayed", SendMessageOptions.DontRequireReceiver);
 		}
 
 		void TryCommonInit() {
