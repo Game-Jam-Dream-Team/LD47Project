@@ -15,21 +15,36 @@ namespace Game.Behaviour {
 
 		List<TweetView> _instances = new List<TweetView>();
 
+		bool _shouldUpdate;
+
 		void Awake() {
 			_pool = new Pool("Tweet", Prefab.gameObject, gameObject, 10, PoolInflationType.INCREMENT);
 		}
 
 		void Start() {
 			UpdateLayout();
-			GameState.Instance.QuestController.TweetsUpdated += UpdateLayout;
+			GameState.Instance.QuestController.TweetsUpdated += UpdateLayoutDelayed;
 		}
 
 		void OnDestroy() {
-			GameState.Instance.QuestController.TweetsUpdated -= UpdateLayout;
+			GameState.Instance.QuestController.TweetsUpdated -= UpdateLayoutDelayed;
+		}
+
+		void UpdateLayoutDelayed() {
+			_shouldUpdate = true;
+		}
+
+		void Update() {
+			if ( _shouldUpdate ) {
+				UpdateLayout();
+				_shouldUpdate = false;
+			}
 		}
 
 		void UpdateLayout() {
 			foreach ( var instance in _instances ) {
+				instance.DeinitTweet();
+				instance.PlayerCommentView.DeinitTweet();
 				_pool.ReturnObjectToPool(instance.GetComponent<PoolObject>());
 			}
 			_instances.Clear();
