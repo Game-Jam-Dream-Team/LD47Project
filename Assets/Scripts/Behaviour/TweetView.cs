@@ -33,7 +33,8 @@ namespace Game.Behaviour {
 		public PlayerCommentView PlayerCommentView;
 		public GameObject        TweetCommentPrefab;
 
-		TweetsController _controller;
+		TweetsController _tweetsController;
+		QuestController  _questController;
 
 		Tweet _tweet;
 
@@ -67,7 +68,7 @@ namespace Game.Behaviour {
 			}
 			index %= qc.CurrentTweets.Length;
 			var tweet = qc.CurrentTweets[index];
-			InitTweet(tc, tweet);
+			InitTweet(tc, qc, tweet);
 			LayoutRebuilder.ForceRebuildLayoutImmediate(transform.parent as RectTransform);
 		}
 
@@ -87,12 +88,15 @@ namespace Game.Behaviour {
 			_isCommonInit = true;
 		}
 
-		public void InitTweet(TweetsController controller, Tweet tweet, bool isRoot = true) {
-			_controller = controller;
-			_tweet      = tweet;
+		public void InitTweet(TweetsController tweetsController, QuestController questController, Tweet tweet, bool isRoot = true) {
+			_tweetsController = tweetsController;
+			_questController  = questController;
+			_tweet            = tweet;
+
+			_questController.OnSenderAvatarChanged += OnSenderAvatarChanged;
 
 			var senderInfo = _senderCollection.GetSenderInfo(_tweet.SenderId);
-			Avatar.sprite = senderInfo.Avatar;
+			Avatar.sprite = senderInfo.OverrideAvatar ? senderInfo.OverrideAvatar : senderInfo.Avatar;
 			InitSender(senderInfo.DisplayName);
 			MessageText.text = _tweet.Message;
 			CommentsText.text = _tweet.CommentsCount.ToString();
@@ -126,18 +130,26 @@ namespace Game.Behaviour {
 			}
 		}
 
+		void OnSenderAvatarChanged(int senderId, Sprite newAvatar) {
+			if ( _tweet.SenderId != senderId ) {
+				return;
+			}
+			Avatar.sprite = newAvatar;
+		}
+
 		void AddCommentView(int commentId) {
 			var commentViewGo = Instantiate(TweetCommentPrefab, CommentsRoot);
 			var commentView = commentViewGo.GetComponent<TweetView>();
 			commentView.TryCommonInit();
-			commentView.InitTweet(_controller, _controller.GetTweetById(commentId), false);
+			commentView.InitTweet(_tweetsController, _questController, _tweetsController.GetTweetById(commentId),
+				false);
 			commentView.transform.SetAsLastSibling();
 			_commentViews.Add(commentView);
 		}
 
 		IEnumerator TempDisappearCoro() {
 			yield return new WaitForSeconds(2f);
-			_controller.RemoveTweet(_tweet);
+			_tweetsController.RemoveTweet(_tweet);
 		}
 
 		public void DeinitTweet() {
@@ -157,6 +169,8 @@ namespace Game.Behaviour {
 					Destroy(commentView.gameObject);
 				}
 				_commentViews.Clear();
+
+				_questController.OnSenderAvatarChanged -= OnSenderAvatarChanged;
 			}
 		}
 
@@ -180,14 +194,15 @@ namespace Game.Behaviour {
 		void OnRetweetsClick() { }
 
 		void OnImageClick() {
-			_controller.ClickImage(_tweet);
+			_tweetsController.ClickImage(_tweet);
 		}
 
 		void OnCommentsCountChanged(int commentsCount) {
-			var tweet      = _tweet;
-			var controller = _controller;
+			var tweet            = _tweet;
+			var tweetsController = _tweetsController;
+			var questController  = _questController;
 			DeinitTweet();
-			InitTweet(controller, tweet);
+			InitTweet(tweetsController, questController, tweet);
 			SendMessageUpwards("UpdateLayout");
 		}
 

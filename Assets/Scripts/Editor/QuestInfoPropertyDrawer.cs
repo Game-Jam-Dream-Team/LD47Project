@@ -1,0 +1,52 @@
+using UnityEditor;
+using UnityEngine;
+
+using System;
+
+using Game.Common.Quests;
+using Game.Settings;
+
+namespace Game.Editor {
+	[CustomPropertyDrawer(typeof(QuestCollection.QuestInfo))]
+	public sealed class QuestInfoPropertyDrawer : PropertyDrawer {
+		const float Separator = 10f;
+		const float Offset    = 18f;
+
+		public override void OnGUI(Rect position, SerializedProperty property, GUIContent label) {
+			EditorGUI.PropertyField(position, property, label, true);
+			var defaultHeight = EditorGUI.GetPropertyHeight(property);
+
+			var questEventsProp = property.FindPropertyRelative("QuestEvents");
+			var types = (QuestEventType[]) Enum.GetValues(typeof(QuestEventType));
+			for ( var i = 0; i < types.Length; i++ ) {
+				var questEventType = types[i];
+				if ( GUI.Button(
+					new Rect(position.x, position.y + Separator + defaultHeight + i * Offset, position.width, Offset),
+					$"Add {questEventType.ToString()} event") ) {
+					var index = questEventsProp.arraySize;
+					questEventsProp.InsertArrayElementAtIndex(index);
+					var val = questEventsProp.GetArrayElementAtIndex(index);
+					object newValue = null;
+					switch ( questEventType ) {
+						case QuestEventType.ChangeSenderAvatar: {
+							newValue = new ChangeSenderAvatarQuestEvent();
+							break;
+						}
+						default: {
+							Debug.LogErrorFormat("Unsupported quest event type '{0}'", questEventType.ToString());
+							break;
+						}
+					}
+					if ( newValue != null ) {
+						val.managedReferenceValue = newValue;
+					}
+				}
+			}
+		}
+
+		public override float GetPropertyHeight(SerializedProperty property, GUIContent label) {
+			var types = (QuestEventType[])Enum.GetValues(typeof(QuestEventType));
+			return EditorGUI.GetPropertyHeight(property) + Separator + Offset * types.Length;
+		}
+	}
+}

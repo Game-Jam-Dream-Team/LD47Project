@@ -11,6 +11,7 @@ namespace Game.Behaviour {
 
 		TweetSpritesCollection _tweetSpritesCollection;
 
+		Tweet                                    _curTweet;
 		List<TweetSpritesCollection.TimedSprite> _sprites;
 
 		int   _index;
@@ -58,7 +59,8 @@ namespace Game.Behaviour {
 
 		void Open(Tweet tweet) {
 			Background.SetActive(true);
-			_sprites = _tweetSpritesCollection.GetTweetSprites(tweet.ImageId);
+			_curTweet = tweet;
+			_sprites  = _tweetSpritesCollection.GetTweetSprites(tweet.ImageId);
 			if ( _sprites.Count > 0 ) {
 				_index = 0;
 				_timer = 0;
@@ -75,6 +77,11 @@ namespace Game.Behaviour {
 			}
 			Background.SetActive(false);
 			Image.enabled = false;
+			if ( _curTweet != null ) {
+				var tweetId = _curTweet.Id;
+				_curTweet = null;
+				GameState.Instance.QuestController.OnImageShowFinished(tweetId);
+			}
 		}
 
 		void SetupTimedSprite(int index) {

@@ -1,5 +1,7 @@
 using UnityEngine;
 
+using Game.Common.Quests;
+
 using System;
 using System.Collections.Generic;
 
@@ -12,6 +14,8 @@ namespace Game.Settings {
 			public string CorrectAnswer;
 			public float  OneShotGlitch;
 			public float  BaseGlitchIncrease;
+			[Space] [SerializeReference]
+			public List<BaseQuestEvent> QuestEvents = new List<BaseQuestEvent>();
 		}
 
 		public List<QuestInfo> QuestInfos = new List<QuestInfo>();

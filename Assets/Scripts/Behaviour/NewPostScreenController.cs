@@ -23,7 +23,8 @@ namespace Game.Behaviour {
 			_mainScreenController = mainScreenController;
 
 			var senderCollection = Resources.Load<SenderCollection>("SenderCollection");
-			PlayerAvatar.sprite = senderCollection.GetSenderInfo(TweetsController.PlayerId).Avatar;
+			var playerInfo       = senderCollection.GetSenderInfo(TweetsController.PlayerId);
+			PlayerAvatar.sprite  = playerInfo.OverrideAvatar ? playerInfo.OverrideAvatar : playerInfo.Avatar;
 
 			BackButton.onClick.AddListener(OnBackButtonClick);
 			PostButton.onClick.AddListener(OnPostButtonClick);

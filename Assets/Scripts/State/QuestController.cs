@@ -1,8 +1,14 @@
+using UnityEngine;
+
 using System;
+using System.Collections.Generic;
 using System.Linq;
+
+using Game.Behaviour;
 using Game.Settings;
 using Game.Common;
-using UnityEngine;
+using Game.Common.Quests;
+
 using Random = UnityEngine.Random;
 
 namespace Game.State {
@@ -10,18 +16,24 @@ namespace Game.State {
 		const int   OtherTweetsCount      = 10;
 		const float QuestFinishDelay      = 2.0f;
 		const float QuestFinishGlitchTime = 2.0f;
+		const float QuestEventGlitchTime  = 0.5f;
 
 		readonly TweetsController _tweetsController;
 		readonly GlitchController _glitchController;
 
-		QuestCollection _questCollection;
+		QuestCollection  _questCollection;
+		SenderCollection _senderCollection;
 
 		QuestCollection.QuestInfo _upcomingQuestInfo;
 
 		int   _questIndex;
 		float _finishTimer;
 
+		readonly List<BaseQuestEvent> _pendingQuestEvents = new List<BaseQuestEvent>();
+
 		public event Action TweetsUpdated = () => {};
+
+		public event Action<int, Sprite> OnSenderAvatarChanged;
 
 		public Tweet[] CurrentTweets { get; private set; } = new Tweet[0];
 
@@ -31,8 +43,16 @@ namespace Game.State {
 		}
 
 		public override void Init() {
-			_questCollection = Resources.Load<QuestCollection>("QuestCollection");
+			_questCollection  = Resources.Load<QuestCollection>("QuestCollection");
+			_senderCollection = Resources.Load<SenderCollection>("SenderCollection");
 			SetupCurrentTweets();
+
+			var questInfo = _questCollection.TryGetQuestInfo(_questIndex);
+			if ( questInfo == null ) {
+				Debug.LogError("No quests");
+				return;
+			}
+			_pendingQuestEvents.AddRange(questInfo.QuestEvents);
 		}
 
 		public override void Update() {
@@ -78,6 +98,33 @@ namespace Game.State {
 			return TryHandleAnswer(info, message);
 		}
 
+		public void OnImageShowFinished(int tweetId) {
+			for ( var i = _pendingQuestEvents.Count - 1; i >= 0; i-- ) {
+				var questEvent = _pendingQuestEvents[i];
+				if ( (questEvent.Trigger.Type == QuestEventTriggerType.ImageShowFinished) &&
+				     (questEvent.Trigger.Arg == tweetId.ToString()) ) {
+					FireEvent(questEvent);
+					_pendingQuestEvents.RemoveAt(i);
+				}
+			}
+		}
+
+		void FireEvent(BaseQuestEvent baseQuestEvent) {
+			_glitchController.AddConstantly(baseQuestEvent.BaseGlitchIncrease);
+			_glitchController.AddOneShot(baseQuestEvent.OneShotGlitch, QuestEventGlitchTime);
+			switch ( baseQuestEvent.Type ) {
+				case QuestEventType.ChangeSenderAvatar when baseQuestEvent is ChangeSenderAvatarQuestEvent questEvent: {
+					_senderCollection.SetOverrideSprite(questEvent.SenderId, questEvent.NewAvatar);
+					OnSenderAvatarChanged?.Invoke(questEvent.SenderId, questEvent.NewAvatar);
+					break;
+				}
+				default: {
+					Debug.LogErrorFormat("Unsupported QuestEventType '{0}'", baseQuestEvent.Type.ToString());
+					break;
+				}
+			}
+		}
+
 		bool TryHandleAnswer(QuestCollection.QuestInfo info, string message) {
 			if ( info.CorrectAnswer == message.Trim() ) {
 				Debug.Log("Answer is correct");
@@ -90,6 +137,16 @@ namespace Game.State {
 
 		void HandleQuestFinish(QuestCollection.QuestInfo info) {
 			_questIndex++;
+
+			if ( _pendingQuestEvents.Count > 0 ) {
+				Debug.LogErrorFormat("Not all quest events fired");
+				_pendingQuestEvents.Clear();
+			}
+			var questInfo = _questCollection.TryGetQuestInfo(_questIndex);
+			if ( questInfo != null ) {
+				_pendingQuestEvents.AddRange(questInfo.QuestEvents);
+			}
+
 			SetupCurrentTweets();
 			_glitchController.AddConstantly(info.BaseGlitchIncrease);
 			_glitchController.AddOneShot(info.OneShotGlitch, QuestFinishGlitchTime);

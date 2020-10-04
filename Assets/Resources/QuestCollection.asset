@@ -17,3 +17,17 @@ MonoBehaviour:
     CorrectAnswer: 42
     OneShotGlitch: 1
     BaseGlitchIncrease: 0.001
+    QuestEvents:
+    - id: 0
+  references:
+    version: 1
+    00000000:
+      type: {class: ChangeSenderAvatarQuestEvent, ns: Game.Common.Quests, asm: Assembly-CSharp}
+      data:
+        Trigger:
+          Type: 0
+          Arg: 
+        OneShotGlitch: 0
+        BaseGlitchIncrease: 0
+        SenderId: 0
+        NewAvatar: {fileID: 0}
