@@ -1,6 +1,9 @@
-using Game.State;
 using UnityEngine;
 using UnityEngine.UI;
+
+using Game.State;
+
+using JetBrains.Annotations;
 
 namespace Game.Behaviour {
 	public sealed class TweetsFeedView : MonoBehaviour {
@@ -11,6 +14,12 @@ namespace Game.Behaviour {
 			LayoutRebuilder.ForceRebuildLayoutImmediate(TweetViewsRoot);
 			TweetViewsScrollRect.verticalNormalizedPosition = 1f;
 			TweetViewsScrollRect.totalCount = -1;
+		}
+
+		[UsedImplicitly]
+		public void UpdateLayout() {
+			LayoutRebuilder.ForceRebuildLayoutImmediate(TweetViewsRoot);
+			LayoutRebuilder.ForceRebuildLayoutImmediate(TweetViewsRoot); // for some reason one call isn't enough
 		}
 
 		void Start() {

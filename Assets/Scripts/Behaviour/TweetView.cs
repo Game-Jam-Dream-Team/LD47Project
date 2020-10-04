@@ -3,6 +3,7 @@ using UnityEngine.UI;
 
 using System;
 using System.Collections;
+using System.Collections.Generic;
 
 using Game.Common;
 using Game.State;
@@ -26,6 +27,11 @@ namespace Game.Behaviour {
 		public GameObject TweetImageRoot;
 		public Image      TweetImage;
 		public Button     TweetImageButton;
+		[Space]
+		public RectTransform     CommentsRoot;
+		public RectTransform     PlayerCommentViewTransform;
+		public PlayerCommentView PlayerCommentView;
+		public GameObject        TweetCommentPrefab;
 
 		TweetsController _controller;
 
@@ -35,9 +41,11 @@ namespace Game.Behaviour {
 		SenderCollection       _senderCollection;
 		TweetSpritesCollection _tweetSpritesCollection;
 
+		readonly List<TweetView> _commentViews = new List<TweetView>();
+
 		void OnDestroy() {
 			if ( _tweet != null ) {
-				_tweet.OnCommentsCountChanged -= UpdateCommentsCount;
+				_tweet.OnCommentsCountChanged -= OnCommentsCountChanged;
 				_tweet.OnLikesCountChanged    -= UpdateLikesCount;
 				_tweet.OnRetweetsCountChanged -= UpdateRetweetsCount;
 			}
@@ -79,7 +87,7 @@ namespace Game.Behaviour {
 			_isCommonInit = true;
 		}
 
-		public void InitTweet(TweetsController controller, Tweet tweet) {
+		public void InitTweet(TweetsController controller, Tweet tweet, bool isRoot = true) {
 			_controller = controller;
 			_tweet      = tweet;
 
@@ -87,7 +95,7 @@ namespace Game.Behaviour {
 			Avatar.sprite = senderInfo.Avatar;
 			InitSender(senderInfo.DisplayName);
 			MessageText.text = _tweet.Message;
-			UpdateCommentsCount(_tweet.CommentsCount);
+			CommentsText.text = _tweet.CommentsCount.ToString();
 			UpdateLikesCount(_tweet.LikesCount);
 			UpdateRetweetsCount(_tweet.RetweetsCount);
 
@@ -98,27 +106,57 @@ namespace Game.Behaviour {
 				TweetImage.sprite = _tweetSpritesCollection.GetTweetSprite(_tweet.ImageId);
 			}
 
+			if ( CommentsRoot ) {
+				CommentsRoot.gameObject.SetActive(isRoot && (tweet.Type != TweetType.Temporary) &&
+				                                  (_tweet.CommentIds.Count > 0));
+			}
 			if ( tweet.Type == TweetType.Temporary ) {
 				StartCoroutine(TempDisappearCoro());
-			} else {
-				_tweet.OnCommentsCountChanged += UpdateCommentsCount;
+			} else if ( isRoot ) {
+				PlayerCommentView.InitTweet(_tweet);
+
+				foreach ( var commentId in _tweet.CommentIds ) {
+					AddCommentView(commentId);
+				}
+				PlayerCommentViewTransform.SetAsLastSibling();
+
+				_tweet.OnCommentsCountChanged += OnCommentsCountChanged;
 				_tweet.OnLikesCountChanged    += UpdateLikesCount;
 				_tweet.OnRetweetsCountChanged += UpdateRetweetsCount;
 			}
 		}
 
+		void AddCommentView(int commentId) {
+			var commentViewGo = Instantiate(TweetCommentPrefab, CommentsRoot);
+			var commentView = commentViewGo.GetComponent<TweetView>();
+			commentView.TryCommonInit();
+			commentView.InitTweet(_controller, _controller.GetTweetById(commentId), false);
+			commentView.transform.SetAsLastSibling();
+			_commentViews.Add(commentView);
+		}
+
 		IEnumerator TempDisappearCoro() {
-			yield return null;
+			yield return new WaitForSeconds(2f);
 			_controller.RemoveTweet(_tweet);
 		}
 
 		public void DeinitTweet() {
 			if ( _tweet != null ) {
-				_tweet.OnCommentsCountChanged -= UpdateCommentsCount;
+				if ( PlayerCommentView ) {
+					PlayerCommentView.DeinitTweet();
+				}
+
+				_tweet.OnCommentsCountChanged -= OnCommentsCountChanged;
 				_tweet.OnLikesCountChanged    -= UpdateLikesCount;
 				_tweet.OnRetweetsCountChanged -= UpdateRetweetsCount;
 
 				_tweet = null;
+
+				foreach ( var commentView in _commentViews ) {
+					commentView.DeinitTweet();
+					Destroy(commentView.gameObject);
+				}
+				_commentViews.Clear();
 			}
 		}
 
@@ -133,7 +171,8 @@ namespace Game.Behaviour {
 		}
 
 		void OnCommentsClick() {
-			SendMessageUpwards("TryShowCommentsScreen", _tweet, SendMessageOptions.DontRequireReceiver);
+			CommentsRoot.gameObject.SetActive(!CommentsRoot.gameObject.activeSelf);
+			SendMessageUpwards("UpdateLayout");
 		}
 
 		void OnLikesClick() { }
@@ -144,8 +183,12 @@ namespace Game.Behaviour {
 			_controller.ClickImage(_tweet);
 		}
 
-		void UpdateCommentsCount(int commentsCount) {
-			CommentsText.text = commentsCount.ToString();
+		void OnCommentsCountChanged(int commentsCount) {
+			var tweet      = _tweet;
+			var controller = _controller;
+			DeinitTweet();
+			InitTweet(controller, tweet);
+			SendMessageUpwards("UpdateLayout");
 		}
 
 		void UpdateLikesCount(int likesCount) {
