@@ -120,6 +120,11 @@ namespace Game.State {
 					OnSenderAvatarChanged?.Invoke(questEvent.SenderId, questEvent.NewAvatar);
 					break;
 				}
+				case QuestEventType.SpawnComment when baseQuestEvent is SpawnCommentQuestEvent questEvent: {
+					_tweetsController.AddComment(_tweetsController.GetTweetById(questEvent.ParentTweetId),
+						_tweetsController.GetTweetById(questEvent.TweetId));
+					break;
+				}
 				default: {
 					Debug.LogErrorFormat("Unsupported QuestEventType '{0}'", baseQuestEvent.Type.ToString());
 					break;

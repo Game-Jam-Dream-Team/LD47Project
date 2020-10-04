@@ -7,5 +7,6 @@ namespace Game.Common {
 		Quest1    = 4,
 		Temporary = 5,
 		Player    = 6,
+		Reserved  = 7,
 	}
 }
