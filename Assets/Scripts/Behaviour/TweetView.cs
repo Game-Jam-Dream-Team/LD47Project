@@ -50,11 +50,12 @@ namespace Game.Behaviour {
 				DeinitTweet();
 			}
 			var tc = GameState.Instance.TweetsController;
+			var qc = GameState.Instance.QuestController;
 			while ( index < 0 ) {
-				index += tc.RootTweetsCount;
+				index += qc.CurrentTweets.Length;
 			}
-			index %= tc.RootTweetsCount;
-			var tweet = tc.GetRootTweetByIndex(index);
+			index %= qc.CurrentTweets.Length;
+			var tweet = qc.CurrentTweets[index];
 			InitTweet(tc, tweet);
 			LayoutRebuilder.ForceRebuildLayoutImmediate(transform.parent as RectTransform);
 		}

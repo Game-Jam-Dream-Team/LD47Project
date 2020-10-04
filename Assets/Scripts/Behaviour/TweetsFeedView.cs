@@ -9,6 +9,15 @@ namespace Game.Behaviour {
 		public void Init() {
 			LayoutRebuilder.ForceRebuildLayoutImmediate(TweetViewsRoot);
 			TweetViewsScrollRect.verticalNormalizedPosition = 1f;
+			TweetViewsScrollRect.totalCount = -1;
+		}
+
+		void Start() {
+			Refill();
+		}
+
+		void Refill() {
+			TweetViewsScrollRect.RefillCells();
 		}
 	}
 }

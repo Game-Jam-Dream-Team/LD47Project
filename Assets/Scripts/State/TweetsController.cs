@@ -6,7 +6,6 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using Game.Common;
-using Random = UnityEngine.Random;
 
 namespace Game.State {
 	public sealed class TweetsController : BaseController {
@@ -14,53 +13,29 @@ namespace Game.State {
 		const string Separator                 = "######";
 		const string TweetIdPrefix             = "#id:";
 		const string TweetCommentIdsPrefix     = "#commentIds:";
-		const float  UpdateInterval            = 1f;
 
-		readonly List<Tweet> _tweets     = new List<Tweet>();
-		readonly List<Tweet> _rootTweets = new List<Tweet>();
-
-		float _timer;
-
-		public int RootTweetsCount => _rootTweets.Count;
+		readonly List<Tweet> _allTweets     = new List<Tweet>();
+		readonly List<Tweet> _allRootTweets = new List<Tweet>();
 
 		public event Action<Tweet> ImageClick = _ => { };
 
 		public override void Init() {
-			LoadTweets();
-			foreach ( var tweet in _tweets ) {
-				if ( _tweets.All(x => !x.CommentIds.Contains(tweet.Id)) ) {
-					_rootTweets.Add(tweet);
+			LoadAllTweets();
+			foreach ( var tweet in _allTweets ) {
+				if ( _allTweets.All(x => !x.CommentIds.Contains(tweet.Id)) ) {
+					_allRootTweets.Add(tweet);
 				}
 			}
-			_tweets.TrimExcess();
-			_rootTweets.TrimExcess();
-			var count = _rootTweets.Count;
-			while ( count > 1 ) {
-				--count;
-				var rand = Random.Range(0, count + 1);
-				var val  = _rootTweets[rand];
-				_rootTweets[rand]  = _rootTweets[count];
-				_rootTweets[count] = val;
-			}
-		}
-
-		public override void Update() {
-			_timer += Time.deltaTime;
-			if ( _timer >= UpdateInterval ) {
-				foreach ( var tweet in _tweets ) {
-					tweet.LikesCount    += Random.Range(0, 10);
-					tweet.RetweetsCount += Random.Range(0, 2);
-				}
-				_timer -= UpdateInterval;
-			}
+			_allTweets.TrimExcess();
+			_allRootTweets.TrimExcess();
 		}
 
 		public Tweet GetRootTweetByIndex(int index) {
-			return _rootTweets[index];
+			return _allRootTweets[index];
 		}
 
 		public Tweet GetTweetById(int tweetId) {
-			foreach ( var tweet in _tweets ) {
+			foreach ( var tweet in _allTweets ) {
 				if ( tweet.Id == tweetId ) {
 					return tweet;
 				}
@@ -73,7 +48,14 @@ namespace Game.State {
 			ImageClick.Invoke(tweet);
 		}
 
-		void LoadTweets() {
+		public IEnumerable<Tweet> GetRootTweetsByType(TweetType requiredType, int otherTypesCount, params TweetType[] otherTypes) {
+			return
+				_allRootTweets
+					.Where(t => (t.Type == requiredType))
+					.Concat(_allRootTweets.Where(t => otherTypes.Contains(t.Type)).Take(otherTypesCount));
+		}
+
+		void LoadAllTweets() {
 			var tweetTypes = (TweetType[]) Enum.GetValues(typeof(TweetType));
 			foreach ( var tweetType in tweetTypes ) {
 				LoadTweetsForType(tweetType);
@@ -98,14 +80,14 @@ namespace Game.State {
 					if ( line == null ) {
 						if ( composedTweetMessage.Length > 0 ) {
 							var message = composedTweetMessage.ToString();
-							AddTweet(tweetId, tweetSenderId, message, tweetImageId, tweetCommentIds);
+							AddTweet(tweetId, tweetType, tweetSenderId, message, tweetImageId, tweetCommentIds);
 						}
 						break;
 					}
 					if ( line == Separator ) {
 						if ( composedTweetMessage.Length > 0 ) {
 							var message = composedTweetMessage.ToString();
-							AddTweet(tweetId, tweetSenderId, message, tweetImageId, tweetCommentIds);
+							AddTweet(tweetId, tweetType, tweetSenderId, message, tweetImageId, tweetCommentIds);
 							composedTweetMessage.Clear();
 							tweetId       = -1;
 							tweetSenderId = -1;
@@ -144,12 +126,12 @@ namespace Game.State {
 			}
 		}
 
-		void AddTweet(int tweetId, int senderId, string message, int imageId, List<int> commentIds) {
+		void AddTweet(int tweetId, TweetType type, int senderId, string message, int imageId, List<int> commentIds) {
 			if ( tweetId == -1 ) {
 				tweetId = message.GetHashCode();
 			}
-			var tweet = new Tweet(tweetId, senderId, message, imageId, new List<int>(commentIds));
-			_tweets.Add(tweet);
+			var tweet = new Tweet(tweetId, type, senderId, message, imageId, new List<int>(commentIds));
+			_allTweets.Add(tweet);
 		}
 	}
 }
