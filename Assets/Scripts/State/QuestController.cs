@@ -33,6 +33,7 @@ namespace Game.State {
 		readonly List<BaseQuestEvent> _pendingQuestEvents = new List<BaseQuestEvent>();
 
 		public event Action TweetsUpdated = () => {};
+		public event Action GameFinish    = () => {};
 
 		public event Action<int, Sprite> OnSenderAvatarChanged;
 
@@ -159,6 +160,8 @@ namespace Game.State {
 			var questInfo = _questCollection.TryGetQuestInfo(_questIndex);
 			if ( questInfo != null ) {
 				_pendingQuestEvents.AddRange(questInfo.QuestEvents);
+			} else {
+				GameFinish();
 			}
 
 			SetupCurrentTweets();
