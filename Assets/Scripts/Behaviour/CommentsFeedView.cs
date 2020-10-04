@@ -16,7 +16,7 @@ public sealed class CommentsFeedView : MonoBehaviour {
 		var tc = GameState.Instance.TweetsController;
 		foreach ( var commentId in mainTweet.CommentIds ) {
 			var tweetView = GetFreeTweetView();
-			tweetView.InitTweet(tc.GetTweetById(commentId));
+			tweetView.InitTweet(tc, tc.GetTweetById(commentId));
 		}
 
 		// for some reason needs both ForceRebuildLayoutImmediate calls to rebuild properly

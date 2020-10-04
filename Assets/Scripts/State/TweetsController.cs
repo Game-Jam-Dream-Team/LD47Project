@@ -32,6 +32,8 @@ public sealed class TweetsController : BaseController {
 
 	public int RootTweetsCount => _rootTweets.Count;
 
+	public event Action<Tweet> ImageClick = _ => {};
+
 	public override void Init() {
 		LoadTweets();
 		foreach ( var tweet in _tweets ) {
@@ -74,6 +76,10 @@ public sealed class TweetsController : BaseController {
 		}
 		Debug.LogErrorFormat("Can't find tweet with id '{0}'", tweetId);
 		return null;
+	}
+
+	public void ClickImage(Tweet tweet) {
+		ImageClick.Invoke(tweet);
 	}
 
 	void LoadTweets() {

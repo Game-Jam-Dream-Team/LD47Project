@@ -20,6 +20,9 @@ public sealed class TweetView : MonoBehaviour {
 	public TMP_Text   RetweetsText;
 	public GameObject TweetImageRoot;
 	public Image      TweetImage;
+	public Button     TweetImageButton;
+
+	TweetsController _controller;
 
 	Tweet _tweet;
 
@@ -50,7 +53,7 @@ public sealed class TweetView : MonoBehaviour {
 		}
 		index %= tc.RootTweetsCount;
 		var tweet = tc.GetRootTweetByIndex(index);
-		InitTweet(tweet);
+		InitTweet(tc, tweet);
 		LayoutRebuilder.ForceRebuildLayoutImmediate(transform.parent as RectTransform);
 	}
 
@@ -65,12 +68,14 @@ public sealed class TweetView : MonoBehaviour {
 		CommentButton.onClick.AddListener(OnCommentsClick);
 		LikeButton.onClick.AddListener(OnLikesClick);
 		RetweetButton.onClick.AddListener(OnRetweetsClick);
+		TweetImageButton.onClick.AddListener(OnImageClick);
 
 		_isCommonInit = true;
 	}
 
-	public void InitTweet(Tweet tweet) {
-		_tweet = tweet;
+	public void InitTweet(TweetsController controller, Tweet tweet) {
+		_controller = controller;
+		_tweet      = tweet;
 
 		var senderInfo = _senderCollection.GetSenderInfo(_tweet.SenderId);
 		Avatar.sprite = senderInfo.Avatar;
@@ -122,6 +127,10 @@ public sealed class TweetView : MonoBehaviour {
 
 	void OnRetweetsClick() {
 
+	}
+
+	void OnImageClick() {
+		_controller.ClickImage(_tweet);
 	}
 
 	void UpdateCommentsCount(int commentsCount) {

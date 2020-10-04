@@ -13,7 +13,7 @@ public sealed class CommentsScreenController : MonoBehaviour {
 		}
 
 		MainTweetView.TryCommonInit();
-		MainTweetView.InitTweet(mainTweet);
+		MainTweetView.InitTweet(GameState.Instance.TweetsController, mainTweet);
 
 		CommentsFeedView.InitTweet(mainTweet);
 		PlayerCommentView.InitTweet(mainTweet);
