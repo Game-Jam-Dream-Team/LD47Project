@@ -14,8 +14,9 @@ GameObject:
   - component: {fileID: 5785396497930902174}
   - component: {fileID: 5785396497930902161}
   - component: {fileID: 5785396497930902160}
+  - component: {fileID: -5412792325260534517}
   m_Layer: 0
-  m_Name: MainCamera
+  m_Name: DeviceCamera
   m_TagString: MainCamera
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -130,3 +131,16 @@ MonoBehaviour:
   _horizontalShake: 0
   _colorDrift: 0
   _shader: {fileID: 4800000, guid: da33272284ea24f208f36998880990be, type: 3}
+--- !u!114 &-5412792325260534517
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5785396497930902163}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cd3d3a249d3e43c9816736fda87ca6be, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  UpdateInterval: 1
