@@ -5,5 +5,6 @@ namespace Game.Common {
 		Comment   = 2,
 		Quest0    = 3,
 		Quest1    = 4,
+		Temporary = 5,
 	}
 }

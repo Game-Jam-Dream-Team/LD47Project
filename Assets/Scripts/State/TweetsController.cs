@@ -58,12 +58,26 @@ namespace Game.State {
 		}
 
 		public void AddComment(Tweet mainTweet, Tweet commentTweet) {
+			// TODO: check if the comment is valid and otherwise set
+			// commentTweet.Type = TweetType.Temporary;
+			commentTweet.Type = TweetType.Comment;
 			_allTweets.Add(commentTweet);
 			mainTweet.AddComment(commentTweet.Id);
 		}
 
+		public void RemoveTweet(Tweet tweet) {
+			if ( _allTweets.Remove(tweet) ) {
+				if ( !_allRootTweets.Remove(tweet) ) {
+					foreach ( var parentTweet in _allTweets.Where(x => x.CommentIds.Contains(tweet.Id)) ) {
+						parentTweet.RemoveComment(tweet.Id);
+					}
+				}
+			}
+		}
+
 		void LoadAllTweets() {
-			var tweetTypes = (TweetType[]) Enum.GetValues(typeof(TweetType));
+			var tweetTypes = ((TweetType[]) Enum.GetValues(typeof(TweetType))).ToList();
+			tweetTypes.Remove(TweetType.Temporary);
 			foreach ( var tweetType in tweetTypes ) {
 				LoadTweetsForType(tweetType);
 			}

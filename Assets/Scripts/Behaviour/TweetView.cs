@@ -2,8 +2,11 @@ using UnityEngine;
 using UnityEngine.UI;
 
 using System;
+using System.Collections;
+
 using Game.Common;
 using Game.State;
+
 using JetBrains.Annotations;
 using TMPro;
 
@@ -95,9 +98,18 @@ namespace Game.Behaviour {
 				TweetImage.sprite = _tweetSpritesCollection.GetTweetSprite(_tweet.ImageId);
 			}
 
-			_tweet.OnCommentsCountChanged += UpdateCommentsCount;
-			_tweet.OnLikesCountChanged    += UpdateLikesCount;
-			_tweet.OnRetweetsCountChanged += UpdateRetweetsCount;
+			if ( tweet.Type == TweetType.Temporary ) {
+				StartCoroutine(TempDisappearCoro());
+			} else {
+				_tweet.OnCommentsCountChanged += UpdateCommentsCount;
+				_tweet.OnLikesCountChanged    += UpdateLikesCount;
+				_tweet.OnRetweetsCountChanged += UpdateRetweetsCount;
+			}
+		}
+
+		IEnumerator TempDisappearCoro() {
+			yield return null;
+			_controller.RemoveTweet(_tweet);
 		}
 
 		public void DeinitTweet() {

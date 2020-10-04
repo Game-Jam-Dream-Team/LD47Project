@@ -3,13 +3,14 @@ using System.Collections.Generic;
 
 namespace Game.Common {
 	public sealed class Tweet {
-		public readonly int       Id;
-		public readonly TweetType Type;
-		public readonly int       SenderId;
-		public readonly string    Message;
-		public readonly int       ImageId;
+		public readonly int    Id;
+		public readonly int    SenderId;
+		public readonly string Message;
+		public readonly int    ImageId;
 
 		public readonly List<int> CommentIds;
+
+		public TweetType Type;
 
 		int _likesCount;
 		int _retweetsCount;
@@ -54,6 +55,12 @@ namespace Game.Common {
 		public void AddComment(int commentId) {
 			CommentIds.Add(commentId);
 			OnCommentsCountChanged?.Invoke(CommentsCount);
+		}
+
+		public void RemoveComment(int commentId) {
+			if ( CommentIds.Remove(commentId) ) {
+				OnCommentsCountChanged?.Invoke(CommentsCount);
+			}
 		}
 	}
 }
