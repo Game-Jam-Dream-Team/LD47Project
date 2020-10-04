@@ -23,12 +23,19 @@ namespace Game.State {
 		}
 
 		public void StartGame() {
+			if ( Application.isEditor ) {
+				return;
+			}
 			_sessionId = Guid.NewGuid().ToString();
 			_unityContext.StartCoroutine(StartGameRoutine(_sessionId));
 		}
 
-		public void FinishGame(string variant, Action onFinished) =>
+		public void FinishGame(string variant, Action onFinished) {
+			if ( Application.isEditor ) {
+				return;
+			}
 			_unityContext.StartCoroutine(FinishGameRoutine(_sessionId, variant, onFinished));
+		}
 
 		public void RequestSummary(Action<Dictionary<string, int>> onFinished) =>
 			_unityContext.StartCoroutine(RequestSummaryRoutine(onFinished));
