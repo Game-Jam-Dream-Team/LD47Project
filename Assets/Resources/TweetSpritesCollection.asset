@@ -15,7 +15,3 @@ MonoBehaviour:
   TweetSpriteInfos:
   - Id: 1
     Sprite: {fileID: 10901, guid: 0000000000000000f000000000000000, type: 0}
-    Video: {fileID: 0}
-  - Id: 2
-    Sprite: {fileID: 21300000, guid: 8f0e0ebf94fa546e6af95aba91553f71, type: 3}
-    Video: {fileID: 32900000, guid: e688f67240e374e05a4a1d4bec1f6be4, type: 3}

@@ -2,13 +2,11 @@ using Game.Common;
 using Game.State;
 using UnityEngine;
 using UnityEngine.UI;
-using UnityEngine.Video;
 
 namespace Game.Behaviour {
 	public sealed class ImageView : MonoBehaviour {
-		public GameObject  Background;
-		public Image       Image;
-		public VideoPlayer Video;
+		public GameObject Background;
+		public Image      Image;
 
 		TweetSpritesCollection _tweetSpritesCollection;
 
@@ -31,23 +29,13 @@ namespace Game.Behaviour {
 
 		void Open(Tweet tweet) {
 			Background.SetActive(true);
-			var sprite = _tweetSpritesCollection.GetTweetSprite(tweet.ImageId);
-			var video = _tweetSpritesCollection.GetTweetVideo(tweet.ImageId);
-			Image.sprite  = sprite;
-			Image.enabled = !video; // Video overrides sprite
-			Video.clip    = video;
-			Video.enabled = video;
-			Video.Play();
+			Image.sprite  = _tweetSpritesCollection.GetTweetSprite(tweet.ImageId);
+			Image.enabled = true;
 		}
 
 		public void Close() {
-			if ( Video.isPlaying ) {
-				Debug.LogWarning("Waiting until video was finished");
-				return;
-			}
 			Background.SetActive(false);
 			Image.enabled = false;
-			Video.enabled = false;
 		}
 	}
 }
