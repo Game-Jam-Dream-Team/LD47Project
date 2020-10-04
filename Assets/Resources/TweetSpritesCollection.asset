@@ -15,3 +15,10 @@ MonoBehaviour:
   TweetSpriteInfos:
   - Id: 1
     Sprite: {fileID: 10901, guid: 0000000000000000f000000000000000, type: 0}
+    Sprites:
+    - Sprite: {fileID: 10901, guid: 0000000000000000f000000000000000, type: 0}
+      Time: 2
+    - Sprite: {fileID: 10915, guid: 0000000000000000f000000000000000, type: 0}
+      Time: 1
+    - Sprite: {fileID: 10901, guid: 0000000000000000f000000000000000, type: 0}
+      Time: 1
