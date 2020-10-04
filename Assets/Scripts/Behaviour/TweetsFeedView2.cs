@@ -9,7 +9,7 @@ using Game.State;
 using SG;
 
 namespace Game.Behaviour {
-	public sealed class TweetsFeedView2 : MonoBehaviour, IDragHandler {
+	public sealed class TweetsFeedView2 : MonoBehaviour, IDragHandler, IScrollHandler {
 		const float AnimTime = 1f;
 
 		public RectTransform TweetViewsRoot;
@@ -124,6 +124,16 @@ namespace Game.Behaviour {
 				return;
 			}
 			var diff = eventData.delta.y;
+			foreach ( var instance in _instances ) {
+				instance.transform.position += Vector3.up * diff;
+			}
+		}
+
+		public void OnScroll(PointerEventData eventData) {
+			if ( _isAnimActive ) {
+				return;
+			}
+			var diff = eventData.scrollDelta.y;
 			foreach ( var instance in _instances ) {
 				instance.transform.position += Vector3.up * diff;
 			}
