@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.EventSystems;
 
+using System.Collections;
 using System.Collections.Generic;
 
 using Game.State;
@@ -9,6 +10,8 @@ using SG;
 
 namespace Game.Behaviour {
 	public sealed class TweetsFeedView2 : MonoBehaviour, IDragHandler {
+		const float AnimTime = 1f;
+
 		public RectTransform TweetViewsRoot;
 		public TweetView     Prefab;
 		public float         TopOffset;
@@ -89,6 +92,25 @@ namespace Game.Behaviour {
 				replyInstance.InitReply(tweet);
 				y -= replyInstance.GetHeight();
 			}
+			StopAllCoroutines();
+			StartCoroutine(ScrollAnim());
+		}
+
+		bool _isAnimActive;
+		float _animTimer;
+
+		IEnumerator ScrollAnim() {
+			_isAnimActive = true;
+			while ( _animTimer < AnimTime ) {
+				_animTimer += Time.deltaTime;
+				var diff = 100f;
+				foreach ( var instance in _instances ) {
+					instance.transform.position += Vector3.up * diff;
+				}
+				yield return null;
+			}
+			_animTimer    = 0f;
+			_isAnimActive = false;
 		}
 
 		TweetView Add(float offset) {
@@ -101,6 +123,9 @@ namespace Game.Behaviour {
 		}
 
 		public void OnDrag(PointerEventData eventData) {
+			if ( _isAnimActive ) {
+				return;
+			}
 			var diff = eventData.delta.y;
 			foreach ( var instance in _instances ) {
 				instance.transform.position += Vector3.up * diff;
