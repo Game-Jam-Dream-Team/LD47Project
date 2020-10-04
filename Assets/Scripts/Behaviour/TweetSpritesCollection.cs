@@ -10,6 +10,7 @@ namespace Game.Behaviour {
 		public sealed class TimedSprite {
 			public Sprite Sprite;
 			public float  Time;
+			public float  Glitch;
 		}
 
 		[Serializable]

@@ -78,8 +78,16 @@ namespace Game.Behaviour {
 		}
 
 		void SetupTimedSprite(int index) {
-			Image.sprite = _sprites[index].Sprite;
-			_delay       = _sprites[index].Time;
+			var entry = _sprites[index];
+			var sprite = entry.Sprite;
+			Image.sprite = sprite;
+			_delay = entry.Time;
+			Image.GetComponent<RectTransform>()
+				.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, sprite.rect.height);
+			var glitch = entry.Glitch;
+			if ( glitch > 0 ) {
+				GameState.Instance.GlitchController.AddOneShot(glitch, _delay / 2);
+			}
 		}
 	}
 }

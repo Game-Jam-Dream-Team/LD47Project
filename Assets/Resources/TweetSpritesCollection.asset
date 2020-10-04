@@ -14,11 +14,32 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   TweetSpriteInfos:
   - Id: 1
-    Sprite: {fileID: 10901, guid: 0000000000000000f000000000000000, type: 0}
+    Sprite: {fileID: 21300000, guid: bd327fac8c8cd476e85080c3aa8575f6, type: 3}
     Sprites:
-    - Sprite: {fileID: 10901, guid: 0000000000000000f000000000000000, type: 0}
+    - Sprite: {fileID: 21300000, guid: bd327fac8c8cd476e85080c3aa8575f6, type: 3}
+      Time: 1
+      Glitch: 0
+    - Sprite: {fileID: 21300000, guid: a95e65706bd164b639980cfde7636887, type: 3}
+      Time: 1.25
+      Glitch: 0.01
+    - Sprite: {fileID: 21300000, guid: ad6baf945c1144902a4eea34b32d0300, type: 3}
+      Time: 1.5
+      Glitch: 0.15
+    - Sprite: {fileID: 21300000, guid: 4752a697d23894c5b83af359dde84489, type: 3}
+      Time: 1.5
+      Glitch: 0.25
+    - Sprite: {fileID: 21300000, guid: 3fb3703f072a44877a5504a33bee54e6, type: 3}
+      Time: 2.5
+      Glitch: 0
+    - Sprite: {fileID: 21300000, guid: df3854789876140a789b81d65df2985a, type: 3}
       Time: 2
-    - Sprite: {fileID: 10915, guid: 0000000000000000f000000000000000, type: 0}
-      Time: 1
-    - Sprite: {fileID: 10901, guid: 0000000000000000f000000000000000, type: 0}
-      Time: 1
+      Glitch: 0.1
+    - Sprite: {fileID: 21300000, guid: 8c70a212c173a40648bba98627dc6f28, type: 3}
+      Time: 2
+      Glitch: 0.01
+    - Sprite: {fileID: 21300000, guid: fc4465bfe9cdf4f39bebdefd66f9f320, type: 3}
+      Time: 2.25
+      Glitch: 0.25
+    - Sprite: {fileID: 21300000, guid: fd377ec2597934f4dbdb5ee1112cef69, type: 3}
+      Time: 2
+      Glitch: 0.5
