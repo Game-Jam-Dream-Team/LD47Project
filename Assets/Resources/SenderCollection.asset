@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: SenderCollection
   m_EditorClassIdentifier: 
   SenderInfos:
-  - DisplayName: The Player
+  - DisplayName: your @self
     Id: 0
     Avatar: {fileID: 21300000, guid: af63dab248d0e437f987e34f870f5236, type: 3}
   - DisplayName: Andrew @SalmonTuna
