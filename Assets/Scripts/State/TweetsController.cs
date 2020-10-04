@@ -16,16 +16,6 @@ namespace Game.State {
 		const string TweetCommentIdsPrefix     = "#commentIds:";
 		const float  UpdateInterval            = 1f;
 
-		readonly Dictionary<TweetType, string> _tweetTypeToPathPostfix = new Dictionary<TweetType, string> {
-			{TweetType.Filler, "Filler"},
-			{TweetType.Generated, "Generated"},
-			{TweetType.Popular, "Popular"},
-			{TweetType.Hacker, "Hacker"},
-			{TweetType.Theme1, "Theme1"},
-			{TweetType.Theme2, "Theme2"},
-			{TweetType.Theme3, "Theme3"},
-		};
-
 		readonly List<Tweet> _tweets     = new List<Tweet>();
 		readonly List<Tweet> _rootTweets = new List<Tweet>();
 
@@ -91,7 +81,7 @@ namespace Game.State {
 		}
 
 		void LoadTweetsForType(TweetType tweetType) {
-			var path            = TweetsContainerPathPrefix + _tweetTypeToPathPostfix[tweetType];
+			var path            = TweetsContainerPathPrefix + tweetType;
 			var tweetsContainer = Resources.Load<TextAsset>(path);
 			if ( !tweetsContainer ) {
 				Debug.LogErrorFormat("TweetsController: can't load TweetsContainer on path '{0}'", path);
