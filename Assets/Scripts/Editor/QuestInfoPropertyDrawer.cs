@@ -2,6 +2,7 @@ using UnityEditor;
 using UnityEngine;
 
 using System;
+using System.Reflection;
 
 using Game.Common.Quests;
 using Game.Settings;
@@ -23,20 +24,16 @@ namespace Game.Editor {
 				if ( GUI.Button(
 					new Rect(position.x, position.y + Separator + defaultHeight + i * Offset, position.width, Offset),
 					$"Add {questEventType.ToString()} event") ) {
-					var index = questEventsProp.arraySize;
+					var className = $"Game.Common.Quests.{questEventType}QuestEvent";
+					var type      = Assembly.GetAssembly(typeof(BaseQuestEvent)).GetType(className);
+					if ( type == null ) {
+						Debug.LogErrorFormat("Can't get type for string '{0}'", className);
+						continue;
+					}
+					var newValue = Activator.CreateInstance(type);
+					var index    = questEventsProp.arraySize;
 					questEventsProp.InsertArrayElementAtIndex(index);
 					var val = questEventsProp.GetArrayElementAtIndex(index);
-					object newValue = null;
-					switch ( questEventType ) {
-						case QuestEventType.ChangeSenderAvatar: {
-							newValue = new ChangeSenderAvatarQuestEvent();
-							break;
-						}
-						default: {
-							Debug.LogErrorFormat("Unsupported quest event type '{0}'", questEventType.ToString());
-							break;
-						}
-					}
 					if ( newValue != null ) {
 						val.managedReferenceValue = newValue;
 					}
