@@ -60,8 +60,8 @@ namespace Game.Behaviour {
 				var tweetViewGo = Instantiate(CommentViewPrefab, CommentViewsParent);
 				tweetView = tweetViewGo.GetComponent<TweetView>();
 				tweetView.TryCommonInit();
-				_activeTweetViews.Add(tweetView);
 			}
+			_activeTweetViews.Add(tweetView);
 			tweetView.gameObject.SetActive(true);
 			return tweetView;
 		}
