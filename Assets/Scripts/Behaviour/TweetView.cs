@@ -197,6 +197,14 @@ namespace Game.Behaviour {
 			}
 		}
 
+		public float GetHeight() {
+			LayoutRebuilder.ForceRebuildLayoutImmediate(transform as RectTransform);
+			if ( TweetRoot.activeSelf ) {
+				return 150f + MessageText.preferredHeight + 10f + (TweetImageRoot.activeSelf ? 205f : 0f);
+			}
+			return 105f;
+		}
+
 		void InitSender(string displayName) {
 			var index = displayName.IndexOf("@", StringComparison.InvariantCulture);
 			if ( index > 0 ) {

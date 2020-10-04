@@ -262,8 +262,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   TweetViewsRoot: {fileID: 3981103860909194011}
   Prefab: {fileID: 7184437611340422983, guid: 2cad03190139445d7a210cfec733bcd3, type: 3}
-  TopOffset: 600
-  BottomOffset: -1000
+  TopOffset: 1500
+  BottomOffset: -1500
 --- !u!1 &3981103860909194004
 GameObject:
   m_ObjectHideFlags: 0

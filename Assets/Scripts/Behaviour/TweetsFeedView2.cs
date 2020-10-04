@@ -1,8 +1,11 @@
-using System.Collections.Generic;
-using Game.State;
-using SG;
 using UnityEngine;
 using UnityEngine.EventSystems;
+
+using System.Collections.Generic;
+
+using Game.State;
+
+using SG;
 
 namespace Game.Behaviour {
 	public sealed class TweetsFeedView2 : MonoBehaviour, IDragHandler {
@@ -39,6 +42,23 @@ namespace Game.Behaviour {
 				UpdateLayout();
 				_shouldUpdate = false;
 			}
+
+			var firstInstance = _instances[0];
+			if ( firstInstance.transform.position.y > TopOffset ) {
+				_instances.RemoveAt(0);
+				_instances.Add(firstInstance);
+				var instance = _instances[_instances.Count - 2];
+				firstInstance.transform.localPosition =
+					instance.transform.localPosition + Vector3.down * instance.GetHeight();
+			}
+			var lastInstance = _instances[_instances.Count - 1];
+			if ( lastInstance.transform.position.y < BottomOffset ) {
+				_instances.RemoveAt(_instances.Count - 1);
+				_instances.Insert(0, lastInstance);
+				var instance = _instances[1];
+				lastInstance.transform.localPosition =
+					instance.transform.localPosition + Vector3.up * lastInstance.GetHeight();
+			}
 		}
 
 		void UpdateLayout() {
@@ -56,18 +76,18 @@ namespace Game.Behaviour {
 				tweetInstance.TweetRoot.SetActive(true);
 				tweetInstance.ReplyRoot.SetActive(false);
 				tweetInstance.InitTweet(tc, qc, tweet);
-				y -= 200;
+				y -= tweetInstance.GetHeight();
 				foreach ( var comment in tweet.CommentIds ) {
 					var commentInstance = Add(y);
 					commentInstance.TweetRoot.SetActive(true);
 					commentInstance.ReplyRoot.SetActive(false);
 					var commentTweet = tc.GetTweetById(comment);
 					commentInstance.InitTweet(tc, qc, commentTweet, false);
-					y -= 200;
+					y -= commentInstance.GetHeight();
 				}
 				var replyInstance = Add(y);
 				replyInstance.InitReply(tweet);
-				y -= 200;
+				y -= replyInstance.GetHeight();
 			}
 		}
 
@@ -84,21 +104,6 @@ namespace Game.Behaviour {
 			var diff = eventData.delta.y;
 			foreach ( var instance in _instances ) {
 				instance.transform.position += Vector3.up * diff;
-			}
-			if ( diff > 0 ) {
-				var firstInstance = _instances[0];
-				if ( firstInstance.transform.position.y > TopOffset ) {
-					_instances.RemoveAt(0);
-					_instances.Add(firstInstance);
-					firstInstance.transform.position = _instances[_instances.Count - 2].transform.position + Vector3.down * 200;
-				}
-			} else {
-				var lastInstance = _instances[_instances.Count - 1];
-				if ( lastInstance.transform.position.y < BottomOffset ) {
-					_instances.RemoveAt(_instances.Count - 1);
-					_instances.Insert(0, lastInstance);
-					lastInstance.transform.position = _instances[1].transform.position + Vector3.up * 200;
-				}
 			}
 		}
 	}
