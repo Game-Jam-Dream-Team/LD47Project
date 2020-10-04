@@ -48,10 +48,10 @@ namespace Game.State {
 			ImageClick.Invoke(tweet);
 		}
 
-		public IEnumerable<Tweet> GetRootTweetsByType(TweetType requiredType, int otherTypesCount, params TweetType[] otherTypes) {
+		public IEnumerable<Tweet> GetRootTweetsByType(TweetType[] requiredTypes, int otherTypesCount, params TweetType[] otherTypes) {
 			return
 				_allRootTweets
-					.Where(t => (t.Type == requiredType))
+					.Where(t => requiredTypes.Contains(t.Type))
 					.Concat(_allRootTweets.Where(t => otherTypes.Contains(t.Type)).Take(otherTypesCount));
 		}
 

@@ -100,7 +100,9 @@ namespace Game.State {
 			if ( !Enum.TryParse<TweetType>("Quest" + _questIndex, out var questType) ) {
 				return;
 			}
-			var currentTweets = _tweetsController.GetRootTweetsByType(questType, OtherTweetsCount, TweetType.Filler, TweetType.Generated)
+			var currentTweets = _tweetsController.GetRootTweetsByType(
+					new TweetType[] { questType, TweetType.Player },
+					OtherTweetsCount, TweetType.Filler, TweetType.Generated)
 				.ToArray();
 			Shuffle(currentTweets);
 			CurrentTweets = currentTweets;
