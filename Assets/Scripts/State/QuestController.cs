@@ -125,6 +125,12 @@ namespace Game.State {
 						_tweetsController.GetTweetById(questEvent.TweetId));
 					break;
 				}
+				case QuestEventType.RemoveTweet when baseQuestEvent is RemoveTweetQuestEvent questEvent: {
+					_tweetsController.RemoveTweet(_tweetsController.GetTweetById(questEvent.TweetId));
+					SetupCurrentTweets();
+					TweetsUpdated();
+					break;
+				}
 				default: {
 					Debug.LogErrorFormat("Unsupported QuestEventType '{0}'", baseQuestEvent.Type.ToString());
 					break;
