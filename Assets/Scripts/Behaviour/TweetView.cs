@@ -46,15 +46,15 @@ public sealed class TweetView : MonoBehaviour {
 		}
 		var tc = GameState.Instance.TweetsController;
 		while ( index < 0 ) {
-			index += tc.TweetsCount;
+			index += tc.RootTweetsCount;
 		}
-		index %= tc.TweetsCount;
-		var tweet = tc.GetTweet(index);
+		index %= tc.RootTweetsCount;
+		var tweet = tc.GetRootTweetByIndex(index);
 		InitTweet(tweet);
 		LayoutRebuilder.ForceRebuildLayoutImmediate(transform.parent as RectTransform);
 	}
 
-	void TryCommonInit() {
+	public void TryCommonInit() {
 		if ( _isCommonInit ) {
 			return;
 		}
@@ -69,7 +69,7 @@ public sealed class TweetView : MonoBehaviour {
 		_isCommonInit = true;
 	}
 
-	void InitTweet(Tweet tweet) {
+	public void InitTweet(Tweet tweet) {
 		_tweet = tweet;
 
 		var senderInfo = _senderCollection.GetSenderInfo(_tweet.SenderId);
@@ -92,7 +92,7 @@ public sealed class TweetView : MonoBehaviour {
 		_tweet.OnRetweetsCountChanged += UpdateRetweetsCount;
 	}
 
-	void DeinitTweet() {
+	public void DeinitTweet() {
 		if ( _tweet != null ) {
 			_tweet.OnCommentsCountChanged -= UpdateCommentsCount;
 			_tweet.OnLikesCountChanged    -= UpdateLikesCount;
@@ -113,7 +113,7 @@ public sealed class TweetView : MonoBehaviour {
 	}
 
 	void OnCommentsClick() {
-
+		SendMessageUpwards("TryShowCommentsScreen", _tweet, SendMessageOptions.DontRequireReceiver);
 	}
 
 	void OnLikesClick() {

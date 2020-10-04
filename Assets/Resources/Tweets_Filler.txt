@@ -1,5 +1,18 @@
 1|1
+#commentIds:2,3,4
 Dammit, I just lost The Game >:(
+######
+2
+#id:2
+Comment uno
+######
+3
+#id:3
+Comment dos
+######
+4
+#id:4
+Comment tres
 ######
 2
 Say what you want, but @ThePinkOne is kinda sus

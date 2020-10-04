@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 
 public sealed class Tweet {
 	public readonly int    Id;
@@ -6,20 +7,12 @@ public sealed class Tweet {
 	public readonly string Message;
 	public readonly int    ImageId;
 
-	int _commentsCount;
+	public readonly List<int> CommentIds;
+
 	int _likesCount;
 	int _retweetsCount;
 
-	public int CommentsCount {
-		get => _commentsCount;
-		set {
-			if ( _commentsCount == value ) {
-				return;
-			}
-			_commentsCount = value;
-			OnCommentsCountChanged?.Invoke(_commentsCount);
-		}
-	}
+	public int CommentsCount => CommentIds.Count;
 
 	public int LikesCount {
 		get => _likesCount;
@@ -47,10 +40,16 @@ public sealed class Tweet {
 	public event Action<int> OnLikesCountChanged;
 	public event Action<int> OnRetweetsCountChanged;
 
-	public Tweet(int id, int senderId, string message, int imageId) {
-		Id       = id;
-		SenderId = senderId;
-		Message  = message;
-		ImageId  = imageId;
+	public Tweet(int id, int senderId, string message, int imageId, List<int> commentIds) {
+		Id         = id;
+		SenderId   = senderId;
+		Message    = message;
+		ImageId    = imageId;
+		CommentIds = commentIds;
+	}
+
+	public void AddComment(int commentId) {
+		CommentIds.Add(commentId);
+		OnCommentsCountChanged?.Invoke(CommentsCount);
 	}
 }

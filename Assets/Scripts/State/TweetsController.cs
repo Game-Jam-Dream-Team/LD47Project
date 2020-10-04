@@ -3,6 +3,7 @@ using UnityEngine;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text;
 
 using Random = UnityEngine.Random;
@@ -10,6 +11,8 @@ using Random = UnityEngine.Random;
 public sealed class TweetsController : BaseController {
 	const string TweetsContainerPathPrefix = "Tweets_";
 	const string Separator                 = "######";
+	const string TweetIdPrefix             = "#id:";
+	const string TweetCommentIdsPrefix     = "#commentIds:";
 	const float  UpdateInterval            = 1f;
 
 	readonly Dictionary<TweetType, string> _tweetTypeToPathPostfix = new Dictionary<TweetType, string> {
@@ -22,22 +25,29 @@ public sealed class TweetsController : BaseController {
 		{ TweetType.Theme3,    "Theme3" },
 	};
 
-	readonly List<Tweet> _tweets = new List<Tweet>();
+	readonly List<Tweet> _tweets     = new List<Tweet>();
+	readonly List<Tweet> _rootTweets = new List<Tweet>();
 
 	float _timer;
 
-	public int         TweetsCount => _tweets.Count;
-	public List<Tweet> Tweets      => new List<Tweet>(_tweets);
+	public int RootTweetsCount => _rootTweets.Count;
 
 	public override void Init() {
 		LoadTweets();
-		var count = _tweets.Count;
+		foreach ( var tweet in _tweets ) {
+			if ( _tweets.All(x => !x.CommentIds.Contains(tweet.Id)) ) {
+				_rootTweets.Add(tweet);
+			}
+		}
+		_tweets.TrimExcess();
+		_rootTweets.TrimExcess();
+		var count = _rootTweets.Count;
 		while ( count > 1 ) {
 			--count;
 			var rand = Random.Range(0, count + 1);
-			var val  = _tweets[rand];
-			_tweets[rand]  = _tweets[count];
-			_tweets[count] = val;
+			var val  = _rootTweets[rand];
+			_rootTweets[rand]  = _rootTweets[count];
+			_rootTweets[count] = val;
 		}
 	}
 
@@ -52,8 +62,18 @@ public sealed class TweetsController : BaseController {
 		}
 	}
 
-	public Tweet GetTweet(int index) {
-		return _tweets[index];
+	public Tweet GetRootTweetByIndex(int index) {
+		return _rootTweets[index];
+	}
+
+	public Tweet GetTweetById(int tweetId) {
+		foreach ( var tweet in _tweets ) {
+			if ( tweet.Id == tweetId ) {
+				return tweet;
+			}
+		}
+		Debug.LogErrorFormat("Can't find tweet with id '{0}'", tweetId);
+		return null;
 	}
 
 	void LoadTweets() {
@@ -71,25 +91,29 @@ public sealed class TweetsController : BaseController {
 			return;
 		}
 		var composedTweetMessage = new StringBuilder();
+		var tweetId              = -1;
 		var tweetSenderId        = -1;
 		var tweetImageId         = -1;
+		var tweetCommentIds      = new List<int>();
 		using ( var sr = new StringReader(tweetsContainer.text) ) {
 			while ( true ) {
 				var line = sr.ReadLine();
 				if ( line == null ) {
 					if ( composedTweetMessage.Length > 0 ) {
 						var message = composedTweetMessage.ToString();
-						AddTweet(tweetSenderId, message, tweetImageId);
+						AddTweet(tweetId, tweetSenderId, message, tweetImageId, tweetCommentIds);
 					}
 					break;
 				}
 				if ( line == Separator ) {
 					if ( composedTweetMessage.Length > 0 ) {
 						var message = composedTweetMessage.ToString();
-						AddTweet(tweetSenderId, message, tweetImageId);
+						AddTweet(tweetId, tweetSenderId, message, tweetImageId, tweetCommentIds);
 						composedTweetMessage.Clear();
+						tweetId       = -1;
 						tweetSenderId = -1;
 						tweetImageId  = -1;
+						tweetCommentIds.Clear();
 					}
 				} else {
 					if ( tweetSenderId == -1  ) {
@@ -100,6 +124,21 @@ public sealed class TweetsController : BaseController {
 								Debug.LogErrorFormat("Can't parse first tweet line '{0}'", line);
 							}
 						}
+					} else if ( line.StartsWith(TweetIdPrefix) ) {
+						if ( !int.TryParse(line.Substring(TweetIdPrefix.Length, line.Length - TweetIdPrefix.Length),
+							out tweetId) ) {
+							Debug.LogErrorFormat("Can't parse tweet id from line '{0}'", line);
+						}
+					} else if ( line.StartsWith(TweetCommentIdsPrefix) ) {
+						var split = line.Substring(TweetCommentIdsPrefix.Length,
+							line.Length - TweetCommentIdsPrefix.Length).Split(',');
+						foreach ( var commentIdStr in split ) {
+							if ( !int.TryParse(commentIdStr, out var commentId) ) {
+								Debug.LogErrorFormat("Can't parse comment ids from line '{0}'", line);
+								break;
+							}
+							tweetCommentIds.Add(commentId);
+						}
 					} else {
 						composedTweetMessage.AppendLine(line);
 					}
@@ -108,9 +147,11 @@ public sealed class TweetsController : BaseController {
 		}
 	}
 
-	void AddTweet(int senderId, string message, int imageId) {
-		var id    = message.GetHashCode();
-		var tweet = new Tweet(id, senderId, message, imageId);
+	void AddTweet(int tweetId, int senderId, string message, int imageId, List<int> commentIds) {
+		if ( tweetId == -1 ) {
+			tweetId = message.GetHashCode();
+		}
+		var tweet = new Tweet(tweetId, senderId, message, imageId, new List<int>(commentIds));
 		_tweets.Add(tweet);
 	}
 }
