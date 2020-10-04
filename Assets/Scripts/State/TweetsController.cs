@@ -26,6 +26,8 @@ namespace Game.State {
 			foreach ( var tweet in _allTweets ) {
 				if ( _allTweets.All(x => !x.CommentIds.Contains(tweet.Id)) ) {
 					_allRootTweets.Add(tweet);
+				} else {
+					tweet.Type = TweetType.Comment;
 				}
 			}
 			_allTweets.TrimExcess();
