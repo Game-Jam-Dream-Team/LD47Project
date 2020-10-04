@@ -10,6 +10,8 @@ using Random = UnityEngine.Random;
 
 namespace Game.State {
 	public sealed class TweetsController : BaseController {
+		public const int PlayerId = 0;
+
 		const string TweetsContainerPathPrefix = "Tweets_";
 		const string Separator                 = "######";
 		const string TweetIdPrefix             = "#id:";
@@ -81,6 +83,11 @@ namespace Game.State {
 
 		public void ClickImage(Tweet tweet) {
 			ImageClick.Invoke(tweet);
+		}
+
+		public void AddComment(Tweet mainTweet, Tweet commentTweet) {
+			_tweets.Add(commentTweet);
+			mainTweet.AddComment(commentTweet.Id);
 		}
 
 		void LoadTweets() {
