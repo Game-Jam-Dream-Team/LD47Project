@@ -54,7 +54,7 @@ namespace Game.Behaviour {
 			var tweetId = message.GetHashCode();
 			var qc      = GameState.Instance.QuestController;
 			var tc      = GameState.Instance.TweetsController;
-			var type    = qc.TryPost(message) ? TweetType.Quest1 : TweetType.Temporary;
+			var type    = qc.TryPost(message) ? TweetType.Player : TweetType.Temporary;
 			var tweet = new Tweet(tweetId, type, TweetsController.PlayerId, message, -1, new List<int>());
 			tc.AddTweet(tweet);
 			NewPostInputField.text = string.Empty;
