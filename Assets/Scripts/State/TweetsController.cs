@@ -56,9 +56,6 @@ namespace Game.State {
 		}
 
 		public void AddComment(Tweet mainTweet, Tweet commentTweet) {
-			// TODO: check if the comment is valid and otherwise set
-			// commentTweet.Type = TweetType.Temporary;
-			commentTweet.Type = TweetType.Comment;
 			_allTweets.Add(commentTweet);
 			mainTweet.AddComment(commentTweet.Id);
 		}

@@ -33,7 +33,11 @@ namespace Game.Behaviour {
 			var message  = InputField.text;
 			var tweetId  = message.GetHashCode();
 			var senderId = TweetsController.PlayerId;
-			var tweet    = new Tweet(tweetId, TweetType.Comment, senderId, message, -1, new List<int>());
+			var qc       = GameState.Instance.QuestController;
+			var type = qc.TryReply(_mainTweet.Id, message)
+				? TweetType.Comment
+				: TweetType.Temporary;
+			var tweet = new Tweet(tweetId, type, senderId, message, -1, new List<int>());
 			GameState.Instance.TweetsController.AddComment(_mainTweet, tweet);
 			InputField.text = string.Empty;
 		}
