@@ -18,6 +18,7 @@ namespace Game.Behaviour {
 
 		[UsedImplicitly]
 		public void UpdateLayout() {
+			TweetViewsScrollRect.RefreshCells();
 			LayoutRebuilder.ForceRebuildLayoutImmediate(TweetViewsRoot);
 			LayoutRebuilder.ForceRebuildLayoutImmediate(TweetViewsRoot); // for some reason one call isn't enough
 		}

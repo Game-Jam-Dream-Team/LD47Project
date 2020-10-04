@@ -3,7 +3,6 @@ using UnityEngine.UI;
 
 using System;
 using System.Collections;
-using System.Collections.Generic;
 
 using Game.Common;
 using Game.State;
@@ -28,10 +27,12 @@ namespace Game.Behaviour {
 		public Image      TweetImage;
 		public Button     TweetImageButton;
 		[Space]
-		public RectTransform     CommentsRoot;
-		public RectTransform     PlayerCommentViewTransform;
+		public HorizontalLayoutGroup LayoutGroup;
+		public RectTransform         RightAreaTransform;
+		[Space]
+		public GameObject        TweetRoot;
+		public GameObject        ReplyRoot;
 		public PlayerCommentView PlayerCommentView;
-		public GameObject        TweetCommentPrefab;
 
 		TweetsController _tweetsController;
 		QuestController  _questController;
@@ -41,8 +42,6 @@ namespace Game.Behaviour {
 		bool                   _isCommonInit;
 		SenderCollection       _senderCollection;
 		TweetSpritesCollection _tweetSpritesCollection;
-
-		readonly List<TweetView> _commentViews = new List<TweetView>();
 
 		void OnDestroy() {
 			if ( _tweet != null ) {
@@ -60,16 +59,64 @@ namespace Game.Behaviour {
 		public void ScrollCellIndex(int index) {
 			if ( _tweet != null ) {
 				DeinitTweet();
+				PlayerCommentView.DeinitTweet();
 			}
 			var tc = GameState.Instance.TweetsController;
 			var qc = GameState.Instance.QuestController;
-			while ( index < 0 ) {
-				index += qc.CurrentTweets.Length;
+			var totalTweets = qc.CurrentTweets.Length * 2; // with fake tweets for replies
+			foreach ( var tmpTweet in qc.CurrentTweets ) {
+				totalTweets += tmpTweet.CommentIds.Count;
 			}
-			index %= qc.CurrentTweets.Length;
-			var tweet = qc.CurrentTweets[index];
-			InitTweet(tc, qc, tweet);
+			while ( index < 0 ) {
+				index += totalTweets;
+			}
+			index %= totalTweets;
+			Tweet tweet = null;
+			var accIndex = 0;
+			var isRoot  = true;
+			var isTweet = true;
+			for ( var i = 0; i < qc.CurrentTweets.Length; ++i ) {
+				var curTweet = qc.CurrentTweets[i];
+				if ( accIndex == index ) {
+					tweet = curTweet;
+					break;
+				}
+				if ( accIndex + curTweet.CommentIds.Count + 1 == index ) {
+					// TODO: init reply
+					tweet = curTweet;
+					InitReply(tweet);
+					isTweet = false;
+					break;
+				}
+				if ( curTweet.CommentIds.Count == 0 ) {
+					accIndex += 2;
+					continue;
+				}
+				if ( accIndex + curTweet.CommentIds.Count < index ) {
+					accIndex += curTweet.CommentIds.Count + 2;
+					continue;
+				}
+				var childIndex = index - accIndex - 1;
+				tweet  = tc.GetTweetById(curTweet.CommentIds[childIndex]);
+				isRoot = false;
+				break;
+			}
+			if ( tweet == null ) {
+				Debug.LogError("Tweet is null");
+				return;
+			}
+			if ( isTweet ) {
+				TweetRoot.SetActive(true);
+				ReplyRoot.SetActive(false);
+				InitTweet(tc, qc, tweet, isRoot);
+			}
 			LayoutRebuilder.ForceRebuildLayoutImmediate(transform.parent as RectTransform);
+		}
+
+		void InitReply(Tweet tweet) {
+			TweetRoot.SetActive(false);
+			ReplyRoot.SetActive(true);
+			PlayerCommentView.InitTweet(tweet);
 		}
 
 		public void TryCommonInit() {
@@ -110,20 +157,12 @@ namespace Game.Behaviour {
 				TweetImage.sprite = _tweetSpritesCollection.GetTweetSprite(_tweet.ImageId);
 			}
 
-			if ( CommentsRoot ) {
-				CommentsRoot.gameObject.SetActive(isRoot && (tweet.Type != TweetType.Temporary) &&
-				                                  (_tweet.CommentIds.Count > 0));
-			}
+			LayoutGroup.padding.left     = isRoot ? 0 : 100;
+			RightAreaTransform.sizeDelta = new Vector2(isRoot ? 490 : 390, RightAreaTransform.sizeDelta.y);
+
 			if ( tweet.Type == TweetType.Temporary ) {
 				StartCoroutine(TempDisappearCoro());
 			} else if ( isRoot ) {
-				PlayerCommentView.InitTweet(_tweet);
-
-				foreach ( var commentId in _tweet.CommentIds ) {
-					AddCommentView(commentId);
-				}
-				PlayerCommentViewTransform.SetAsLastSibling();
-
 				_tweet.OnCommentsCountChanged += OnCommentsCountChanged;
 				_tweet.OnLikesCountChanged    += UpdateLikesCount;
 				_tweet.OnRetweetsCountChanged += UpdateRetweetsCount;
@@ -137,16 +176,6 @@ namespace Game.Behaviour {
 			Avatar.sprite = newAvatar;
 		}
 
-		void AddCommentView(int commentId) {
-			var commentViewGo = Instantiate(TweetCommentPrefab, CommentsRoot);
-			var commentView = commentViewGo.GetComponent<TweetView>();
-			commentView.TryCommonInit();
-			commentView.InitTweet(_tweetsController, _questController, _tweetsController.GetTweetById(commentId),
-				false);
-			commentView.transform.SetAsLastSibling();
-			_commentViews.Add(commentView);
-		}
-
 		IEnumerator TempDisappearCoro() {
 			yield return new WaitForSeconds(2f);
 			_tweetsController.RemoveTweet(_tweet);
@@ -154,21 +183,15 @@ namespace Game.Behaviour {
 
 		public void DeinitTweet() {
 			if ( _tweet != null ) {
-				if ( PlayerCommentView ) {
-					PlayerCommentView.DeinitTweet();
+				if ( _tweet.Type == TweetType.Temporary ) {
+					StopAllCoroutines();
+					_tweetsController.RemoveTweet(_tweet);
 				}
-
 				_tweet.OnCommentsCountChanged -= OnCommentsCountChanged;
 				_tweet.OnLikesCountChanged    -= UpdateLikesCount;
 				_tweet.OnRetweetsCountChanged -= UpdateRetweetsCount;
 
 				_tweet = null;
-
-				foreach ( var commentView in _commentViews ) {
-					commentView.DeinitTweet();
-					Destroy(commentView.gameObject);
-				}
-				_commentViews.Clear();
 
 				_questController.OnSenderAvatarChanged -= OnSenderAvatarChanged;
 			}
@@ -185,8 +208,6 @@ namespace Game.Behaviour {
 		}
 
 		void OnCommentsClick() {
-			CommentsRoot.gameObject.SetActive(!CommentsRoot.gameObject.activeSelf);
-			SendMessageUpwards("UpdateLayout");
 		}
 
 		void OnLikesClick() { }
