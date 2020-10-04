@@ -218,7 +218,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 11e7da2dea0443e1aae9a7f2c50c48cd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  TweetsFeedView: {fileID: 1685234778}
+  TweetsFeedView: {fileID: 1502892675}
 --- !u!4 &711721898
 Transform:
   m_ObjectHideFlags: 0
@@ -238,7 +238,7 @@ Camera:
   m_CorrespondingSourceObject: {fileID: 5785396497930902172, guid: b206c5cc802d74c8c83f01f05b6378ea, type: 3}
   m_PrefabInstance: {fileID: 5785396497578386422}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &1685234778 stripped
+--- !u!114 &1502892675 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 955818468194291887, guid: 2c0407e1bd4f541598c344abfc8492de, type: 3}
   m_PrefabInstance: {fileID: 955818468790777077}
