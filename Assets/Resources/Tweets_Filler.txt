@@ -25,8 +25,8 @@ Johny Depth is getting married. AGAIN!!!
 9
 I ate a one meter long burrito and I'm feeling good
 ######
-10
-Baking is Fun... (фоточка булочек)
+10|2
+Baking is Fun...
 ######
 11
 You’re not as much fun in real life as you are on Twitter
@@ -34,7 +34,7 @@ You’re not as much fun in real life as you are on Twitter
 12
 #NationalBoyfriendDay
 ######
-13
+13|3
 #BOOKSHOPDAY
 ######
 14

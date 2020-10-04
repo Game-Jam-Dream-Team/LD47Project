@@ -43,3 +43,9 @@ MonoBehaviour:
     - Sprite: {fileID: 21300000, guid: fd377ec2597934f4dbdb5ee1112cef69, type: 3}
       Time: 2
       Glitch: 0.5
+  - Id: 2
+    Sprite: {fileID: 21300000, guid: c30b4219543a940b1b05b5dfd95cfac5, type: 3}
+    Sprites: []
+  - Id: 3
+    Sprite: {fileID: 21300000, guid: 89894d9d4a3b045be81c8b1f764a22ab, type: 3}
+    Sprites: []
