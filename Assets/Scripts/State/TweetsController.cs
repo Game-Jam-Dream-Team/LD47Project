@@ -29,6 +29,8 @@ public sealed class TweetsController : BaseController {
 	public int         TweetsCount => _tweets.Count;
 	public List<Tweet> Tweets      => new List<Tweet>(_tweets);
 
+	public event Action<Tweet> ImageClick = _ => {};
+
 	public override void Init() {
 		LoadTweets();
 		var count = _tweets.Count;
@@ -54,6 +56,10 @@ public sealed class TweetsController : BaseController {
 
 	public Tweet GetTweet(int index) {
 		return _tweets[index];
+	}
+
+	public void ClickImage(Tweet tweet) {
+		ImageClick.Invoke(tweet);
 	}
 
 	void LoadTweets() {
