@@ -78,6 +78,7 @@ namespace Game.State {
 		void LoadAllTweets() {
 			var tweetTypes = ((TweetType[]) Enum.GetValues(typeof(TweetType))).ToList();
 			tweetTypes.Remove(TweetType.Temporary);
+			tweetTypes.Remove(TweetType.Comment);
 			foreach ( var tweetType in tweetTypes ) {
 				LoadTweetsForType(tweetType);
 			}
