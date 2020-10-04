@@ -1,6 +1,9 @@
 using UnityEngine;
 using UnityEngine.UI;
 
+using System.Collections.Generic;
+
+using Game.Common;
 using Game.State;
 
 using TMPro;
@@ -47,9 +50,15 @@ namespace Game.Behaviour {
 		}
 
 		void OnPostButtonClick() {
-			// TODO: post
-			_mainScreenController.TryHideNewPostScreen();
+			var message = NewPostInputField.text;
+			var tweetId = message.GetHashCode();
+			var qc      = GameState.Instance.QuestController;
+			var tc      = GameState.Instance.TweetsController;
+			var type    = qc.TryPost(message) ? TweetType.Quest1 : TweetType.Temporary;
+			var tweet = new Tweet(tweetId, type, TweetsController.PlayerId, message, -1, new List<int>());
+			tc.AddTweet(tweet);
 			NewPostInputField.text = string.Empty;
+			_mainScreenController.TryHideNewPostScreen();
 		}
 	}
 }

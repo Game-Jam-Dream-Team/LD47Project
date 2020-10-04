@@ -55,6 +55,11 @@ namespace Game.State {
 					.Concat(_allRootTweets.Where(t => otherTypes.Contains(t.Type)).Take(otherTypesCount));
 		}
 
+		public void AddTweet(Tweet tweet) {
+			_allTweets.Add(tweet);
+			_allRootTweets.Add(tweet);
+		}
+
 		public void AddComment(Tweet mainTweet, Tweet commentTweet) {
 			_allTweets.Add(commentTweet);
 			mainTweet.AddComment(commentTweet.Id);
