@@ -25,11 +25,11 @@ namespace Game.Behaviour {
 
 		void Start() {
 			Refill();
-			GameState.Instance.QuestController.TweetsUpdated += Refill;
+			GameState.Instance.QuestController.TweetsUpdated += UpdateLayout;
 		}
 
 		void OnDestroy() {
-			GameState.Instance.QuestController.TweetsUpdated -= Refill;
+			GameState.Instance.QuestController.TweetsUpdated -= UpdateLayout;
 		}
 
 		void Refill() {
