@@ -1,6 +1,8 @@
 using UnityEngine;
 using UnityEngine.UI;
 
+using Game.State;
+
 using TMPro;
 
 namespace Game.Behaviour {
@@ -17,7 +19,8 @@ namespace Game.Behaviour {
 		public void CommonInit(MainScreenController mainScreenController) {
 			_mainScreenController = mainScreenController;
 
-			// TODO: init PlayerAvatar.sprite
+			var senderCollection = Resources.Load<SenderCollection>("SenderCollection");
+			PlayerAvatar.sprite = senderCollection.GetSenderInfo(TweetsController.PlayerId).Avatar;
 
 			BackButton.onClick.AddListener(OnBackButtonClick);
 			PostButton.onClick.AddListener(OnPostButtonClick);
