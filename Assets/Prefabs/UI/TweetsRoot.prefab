@@ -53,8 +53,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   prefabSource:
     prefabName: Tweet
-    poolSize: 10
-  totalCount: 20
+    poolSize: 20
+  totalCount: -1
   reverseDirection: 0
   rubberScale: 1
   m_Content: {fileID: 3981103860909194011}
@@ -88,7 +88,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Padding: {x: 0, y: 0, z: 0, w: 0}
-  m_Softness: {x: 0, y: 50}
+  m_Softness: {x: 0, y: 0}
 --- !u!114 &3981103860487115449
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -113,7 +113,9 @@ GameObject:
   m_Component:
   - component: {fileID: 3981103860909194011}
   - component: {fileID: 3981103860909194009}
-  - component: {fileID: 3981103860909194010}
+  - component: {fileID: 3388868302781071814}
+  - component: {fileID: 8672496202346616666}
+  - component: {fileID: 9020676212995657057}
   m_Layer: 5
   m_Name: Content
   m_TagString: Untagged
@@ -166,7 +168,31 @@ MonoBehaviour:
   m_ChildScaleWidth: 0
   m_ChildScaleHeight: 0
   m_ReverseArrangement: 0
---- !u!114 &3981103860909194010
+--- !u!114 &3388868302781071814
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3981103860909194004}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4c318dd4751e243cf997073759c708ac, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Material: {fileID: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+--- !u!222 &8672496202346616666
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3981103860909194004}
+  m_CullTransparentMesh: 0
+--- !u!114 &9020676212995657057
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}

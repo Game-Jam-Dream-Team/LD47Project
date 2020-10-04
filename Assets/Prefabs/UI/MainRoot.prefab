@@ -35,8 +35,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 0}
   m_AnchorMax: {x: 1, y: 0}
-  m_AnchoredPosition: {x: -20, y: 20}
-  m_SizeDelta: {x: 100, y: 100}
+  m_AnchoredPosition: {x: 0, y: -10}
+  m_SizeDelta: {x: 168, y: 168}
   m_Pivot: {x: 1, y: 0}
 --- !u!222 &6101420015683383776
 CanvasRenderer:
@@ -59,14 +59,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.6792453, g: 0.6792453, b: 0.6792453, a: 1}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 8f0e0ebf94fa546e6af95aba91553f71, type: 3}
+  m_Sprite: {fileID: 21300000, guid: cf5a1f8963f7647ce998d973688ebab2, type: 3}
   m_Type: 0
   m_PreserveAspect: 1
   m_FillCenter: 1
@@ -313,16 +313,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5195b8e01cc8470cb1302ddd41363e54, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  CommentsScreenController: {fileID: 0}
   NewPostScreenController: {fileID: 2511250486577835370}
   BackButton: {fileID: 0}
   NewPostButton: {fileID: 7769249635766285738}
-  TweetsFeedViewRoot: {fileID: 3921670786997942155}
-  TweetsFeedViewRootShowPos: {fileID: 7221766069870564795}
-  TweetsFeedViewRootHidePos: {fileID: 2277391805015898175}
-  CommentsScreenRoot: {fileID: 0}
-  CommentsScreenRootShowPos: {fileID: 0}
-  CommentsScreenRootHidePos: {fileID: 0}
   NewPostScreenRoot: {fileID: 2241341785210322219}
   NewPostScreenRootShowPos: {fileID: 3086927167082579796}
   NewPostScreenRootHidePos: {fileID: 7485261061809559945}
