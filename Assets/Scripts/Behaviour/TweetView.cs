@@ -224,7 +224,7 @@ namespace Game.Behaviour {
 			var questController  = _questController;
 			DeinitTweet();
 			InitTweet(tweetsController, questController, tweet);
-			SendMessageUpwards("UpdateLayout");
+			SendMessageUpwards("UpdateLayout", SendMessageOptions.DontRequireReceiver);
 		}
 
 		void UpdateLikesCount(int likesCount) {
