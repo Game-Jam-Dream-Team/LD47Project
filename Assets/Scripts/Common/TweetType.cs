@@ -2,7 +2,8 @@ namespace Game.Common {
 	public enum TweetType {
 		Filler    = 0,
 		Generated = 1,
-		Quest0    = 2,
-		Quest1    = 2,
+		Comment   = 2,
+		Quest0    = 3,
+		Quest1    = 4,
 	}
 }
