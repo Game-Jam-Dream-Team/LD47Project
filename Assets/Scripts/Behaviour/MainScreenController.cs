@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.UI;
 
 using DG.Tweening;
 using JetBrains.Annotations;
@@ -9,6 +10,7 @@ public sealed class MainScreenController : MonoBehaviour {
 
 	public TweetsFeedView           TweetsFeedView;
 	public CommentsScreenController CommentsScreenController;
+	public Button                   BackButton;
 	[Space]
 	public RectTransform TweetsFeedViewRoot;
 	public RectTransform TweetsFeedViewRootShowPos;
@@ -19,6 +21,10 @@ public sealed class MainScreenController : MonoBehaviour {
 	public RectTransform CommentsScreenRootHidePos;
 
 	Tween _curAnim;
+
+	void Start() {
+		BackButton.onClick.AddListener(TryHideCommentsScreen);
+	}
 
 	[UsedImplicitly]
 	public void TryShowCommentsScreen(Tweet mainTweet) {
