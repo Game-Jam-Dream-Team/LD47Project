@@ -14,7 +14,11 @@ namespace Game.Behaviour {
 		readonly List<TweetView> _activeTweetViews = new List<TweetView>();
 		readonly List<TweetView> _tweetViewsPool   = new List<TweetView>();
 
+		Tweet _mainTweet;
+
 		public void InitTweet(Tweet mainTweet) {
+			_mainTweet = mainTweet;
+
 			var tc = GameState.Instance.TweetsController;
 			foreach ( var commentId in mainTweet.CommentIds ) {
 				var tweetView = GetFreeTweetView();
@@ -25,6 +29,8 @@ namespace Game.Behaviour {
 			LayoutRebuilder.ForceRebuildLayoutImmediate(CommentViewsParent);
 			CommentViewsScrollRect.verticalNormalizedPosition = 1f;
 			LayoutRebuilder.ForceRebuildLayoutImmediate(CommentViewsParent);
+
+			_mainTweet.OnCommentsCountChanged += OnCommentsCountChanged;
 		}
 
 		public void DeinitTweet() {
@@ -34,6 +40,15 @@ namespace Game.Behaviour {
 				_tweetViewsPool.Add(activeTweetView);
 			}
 			_activeTweetViews.Clear();
+
+			_mainTweet.OnCommentsCountChanged -= OnCommentsCountChanged;
+		}
+
+		void OnCommentsCountChanged(int commentsCount) {
+			var mainTweet = _mainTweet;
+			DeinitTweet();
+			InitTweet(mainTweet);
+			CommentViewsScrollRect.verticalNormalizedPosition = 0f;
 		}
 
 		TweetView GetFreeTweetView() {

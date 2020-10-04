@@ -9,6 +9,8 @@ using Game.Common;
 
 namespace Game.State {
 	public sealed class TweetsController : BaseController {
+		public const int PlayerId = 0;
+
 		const string TweetsContainerPathPrefix = "Tweets_";
 		const string Separator                 = "######";
 		const string TweetIdPrefix             = "#id:";
@@ -53,6 +55,11 @@ namespace Game.State {
 				_allRootTweets
 					.Where(t => (t.Type == requiredType))
 					.Concat(_allRootTweets.Where(t => otherTypes.Contains(t.Type)).Take(otherTypesCount));
+		}
+
+		public void AddComment(Tweet mainTweet, Tweet commentTweet) {
+			_allTweets.Add(commentTweet);
+			mainTweet.AddComment(commentTweet.Id);
 		}
 
 		void LoadAllTweets() {
