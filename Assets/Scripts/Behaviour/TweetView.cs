@@ -113,7 +113,7 @@ namespace Game.Behaviour {
 			LayoutRebuilder.ForceRebuildLayoutImmediate(transform.parent as RectTransform);
 		}
 
-		void InitReply(Tweet tweet) {
+		public void InitReply(Tweet tweet) {
 			TweetRoot.SetActive(false);
 			ReplyRoot.SetActive(true);
 			PlayerCommentView.InitTweet(tweet);
