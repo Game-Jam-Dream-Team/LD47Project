@@ -32,10 +32,6 @@ namespace Game.State {
 			_allRootTweets.TrimExcess();
 		}
 
-		public Tweet GetRootTweetByIndex(int index) {
-			return _allRootTweets[index];
-		}
-
 		public Tweet GetTweetById(int tweetId) {
 			foreach ( var tweet in _allTweets ) {
 				if ( tweet.Id == tweetId ) {
