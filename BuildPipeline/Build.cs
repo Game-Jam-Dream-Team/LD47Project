@@ -30,7 +30,7 @@ class Build : NukeBuild {
 		.Executes(() => {
 			var toolPath = GetButlerPath();
 			var version = GetProjectVersion();
-			var target = "konh/ld47project:html";
+			var target = "konh/blobber:html";
 			var targetDir = RootDirectory / "Build";
 			var proc = ProcessTasks.StartProcess(toolPath, $"push --userversion={version} --verbose {targetDir} {target}");
 			proc.WaitForExit();
