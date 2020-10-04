@@ -16,3 +16,4 @@ Server/bin
 Server/obj
 Server/game.db
 obj
+Assembly-CSharp-firstpass.csproj

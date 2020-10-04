@@ -1,39 +1,42 @@
+using Game.Common;
 using UnityEngine;
 using UnityEngine.UI;
 
 using TMPro;
 
-public sealed class PlayerCommentView : MonoBehaviour {
-	public TMP_InputField InputField;
-	public Button         SendCommentButton;
+namespace Game.Behaviour {
+	public sealed class PlayerCommentView : MonoBehaviour {
+		public TMP_InputField InputField;
+		public Button         SendCommentButton;
 
-	Tweet _mainTweet;
+		Tweet _mainTweet;
 
-	bool _isCommonInit;
+		bool _isCommonInit;
 
-	public void InitTweet(Tweet mainTweet) {
-		TryCommonInit();
+		public void InitTweet(Tweet mainTweet) {
+			TryCommonInit();
 
-		_mainTweet = mainTweet;
+			_mainTweet = mainTweet;
 
-		InputField.text = string.Empty;
-	}
-
-	public void DeinitTweet() {
-		_mainTweet = null;
-	}
-
-	void OnSendCommentClick() {
-		// TODO: send comment
-	}
-
-	void TryCommonInit() {
-		if ( _isCommonInit ) {
-			return;
+			InputField.text = string.Empty;
 		}
 
-		SendCommentButton.onClick.AddListener(OnSendCommentClick);
+		public void DeinitTweet() {
+			_mainTweet = null;
+		}
 
-		_isCommonInit = true;
+		void OnSendCommentClick() {
+			// TODO: send comment
+		}
+
+		void TryCommonInit() {
+			if ( _isCommonInit ) {
+				return;
+			}
+
+			SendCommentButton.onClick.AddListener(OnSendCommentClick);
+
+			_isCommonInit = true;
+		}
 	}
 }

@@ -1,4 +1,6 @@
-public abstract class BaseController {
-	public virtual void Init() { }
-	public virtual void Update() { }
+namespace Game.State {
+	public abstract class BaseController {
+		public virtual void Init()   { }
+		public virtual void Update() { }
+	}
 }

@@ -1,13 +1,16 @@
+using Game.State;
 using UnityEngine;
 
-public sealed class GameStarter : MonoBehaviour {
-	public TweetsFeedView TweetsFeedView;
+namespace Game.Behaviour {
+	public sealed class GameStarter : MonoBehaviour {
+		public TweetsFeedView TweetsFeedView;
 
-	void OnEnable() {
-		GameState.EnsureExists();
-	}
+		void OnEnable() {
+			GameState.EnsureExists();
+		}
 
-	void Start() {
-		TweetsFeedView.Init();
+		void Start() {
+			TweetsFeedView.Init();
+		}
 	}
 }

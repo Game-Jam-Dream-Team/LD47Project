@@ -1,37 +1,41 @@
+using Game.Common;
+using Game.State;
 using UnityEngine;
 
-public sealed class CommentsScreenController : MonoBehaviour {
-	public TweetView         MainTweetView;
-	public CommentsFeedView  CommentsFeedView;
-	public PlayerCommentView PlayerCommentView;
+namespace Game.Behaviour {
+	public sealed class CommentsScreenController : MonoBehaviour {
+		public TweetView         MainTweetView;
+		public CommentsFeedView  CommentsFeedView;
+		public PlayerCommentView PlayerCommentView;
 
-	bool _isShown;
+		bool _isShown;
 
-	public bool TryShow(Tweet mainTweet) {
-		if ( _isShown ) {
-			return false;
+		public bool TryShow(Tweet mainTweet) {
+			if ( _isShown ) {
+				return false;
+			}
+
+			MainTweetView.TryCommonInit();
+			MainTweetView.InitTweet(GameState.Instance.TweetsController, mainTweet);
+
+			CommentsFeedView.InitTweet(mainTweet);
+			PlayerCommentView.InitTweet(mainTweet);
+
+			_isShown = true;
+			return true;
 		}
 
-		MainTweetView.TryCommonInit();
-		MainTweetView.InitTweet(GameState.Instance.TweetsController, mainTweet);
+		public bool TryHide() {
+			if ( !_isShown ) {
+				return false;
+			}
 
-		CommentsFeedView.InitTweet(mainTweet);
-		PlayerCommentView.InitTweet(mainTweet);
+			MainTweetView.DeinitTweet();
+			CommentsFeedView.DeinitTweet();
+			PlayerCommentView.DeinitTweet();
 
-		_isShown = true;
-		return true;
-	}
-
-	public bool TryHide() {
-		if ( !_isShown ) {
-			return false;
+			_isShown = false;
+			return true;
 		}
-
-		MainTweetView.DeinitTweet();
-		CommentsFeedView.DeinitTweet();
-		PlayerCommentView.DeinitTweet();
-
-		_isShown = false;
-		return true;
 	}
 }
