@@ -54,6 +54,10 @@ namespace Game.State {
 				Debug.LogWarning("Answer should be posted as a post");
 				return false;
 			}
+			if ( tweetId != info.ReplyId ) {
+				Debug.LogWarning("Answer should be posted as a reply to another post");
+				return false;
+			}
 			return TryHandleAnswer(info, message);
 		}
 
