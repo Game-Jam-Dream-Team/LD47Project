@@ -179,13 +179,17 @@ namespace Game.State {
 					OtherTweetsCount, TweetType.Filler, TweetType.Generated)
 				.ToArray();
 			Shuffle(currentTweets);
-			var firstTweet  = currentTweets.Single(t => t.Id == 1001);
-			var secondTweet = currentTweets.Single(t => t.Id == 1000);
+			var firstTweet  = currentTweets.FirstOrDefault(t => t.Id == 1001);
+			var secondTweet = currentTweets.FirstOrDefault(t => t.Id == 1000);
 			var tmp = currentTweets.ToList();
-			tmp.Remove(firstTweet);
-			tmp.Remove(secondTweet);
-			tmp.Insert(0, firstTweet);
-			tmp.Insert(1, secondTweet);
+			if ( firstTweet != null ) {
+				tmp.Remove(firstTweet);
+				tmp.Insert(0, firstTweet);
+			}
+			if ( secondTweet != null ) {
+				tmp.Remove(secondTweet);
+				tmp.Insert(1, secondTweet);
+			}
 			CurrentTweets = tmp.ToArray();
 		}
 
