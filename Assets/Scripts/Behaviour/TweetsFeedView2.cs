@@ -29,8 +29,6 @@ namespace Game.Behaviour {
 
 		void Start() {
 			UpdateLayout();
-			StopAllCoroutines();
-			StartCoroutine(ScrollAnim());
 			GameState.Instance.QuestController.TweetsUpdated += UpdateLayoutDelayed;
 		}
 
@@ -90,10 +88,9 @@ namespace Game.Behaviour {
 					commentInstance.InitTweet(tc, qc, commentTweet, false);
 					y -= commentInstance.GetHeight();
 				}
-				var replyInstance = Add(y);
-				replyInstance.InitReply(tweet);
-				y -= replyInstance.GetHeight();
 			}
+			StopAllCoroutines();
+			StartCoroutine(ScrollAnim());
 		}
 
 		bool _isAnimActive;
