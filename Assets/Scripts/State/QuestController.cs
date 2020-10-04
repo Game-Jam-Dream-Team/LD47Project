@@ -8,6 +8,7 @@ using Random = UnityEngine.Random;
 namespace Game.State {
 	public sealed class QuestController : BaseController {
 		const int   OtherTweetsCount      = 10;
+		const float QuestFinishDelay      = 2.0f;
 		const float QuestFinishGlitchTime = 2.0f;
 
 		readonly TweetsController _tweetsController;
@@ -15,7 +16,10 @@ namespace Game.State {
 
 		QuestCollection _questCollection;
 
-		int _questIndex;
+		QuestCollection.QuestInfo _upcomingQuestInfo;
+
+		int   _questIndex;
+		float _finishTimer;
 
 		public event Action TweetsUpdated = () => {};
 
@@ -29,6 +33,19 @@ namespace Game.State {
 		public override void Init() {
 			_questCollection = Resources.Load<QuestCollection>("QuestCollection");
 			SetupCurrentTweets();
+		}
+
+		public override void Update() {
+			if ( _upcomingQuestInfo == null ) {
+				return;
+			}
+			_finishTimer += Time.deltaTime;
+			if ( _finishTimer < QuestFinishDelay ) {
+				return;
+			}
+			_finishTimer = 0;
+			HandleQuestFinish(_upcomingQuestInfo);
+			_upcomingQuestInfo = null;
 		}
 
 		public bool TryPost(string message) {
@@ -64,7 +81,7 @@ namespace Game.State {
 		bool TryHandleAnswer(QuestCollection.QuestInfo info, string message) {
 			if ( info.CorrectAnswer == message.Trim() ) {
 				Debug.Log("Answer is correct");
-				HandleQuestFinish(info);
+				_upcomingQuestInfo = info;
 				return true;
 			}
 			Debug.LogWarning("Answer is not correct");
