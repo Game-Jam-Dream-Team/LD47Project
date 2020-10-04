@@ -18,8 +18,9 @@ namespace Game.State {
 		const float QuestFinishGlitchTime = 2.0f;
 		const float QuestEventGlitchTime  = 0.5f;
 
-		readonly TweetsController _tweetsController;
-		readonly GlitchController _glitchController;
+		readonly TweetsController   _tweetsController;
+		readonly GlitchController   _glitchController;
+		readonly ProgressController _progressController;
 
 		QuestCollection  _questCollection;
 		SenderCollection _senderCollection;
@@ -37,9 +38,10 @@ namespace Game.State {
 
 		public Tweet[] CurrentTweets { get; private set; } = new Tweet[0];
 
-		public QuestController(TweetsController tweetsController, GlitchController glitchController) {
-			_tweetsController = tweetsController;
-			_glitchController = glitchController;
+		public QuestController(TweetsController tweetsController, GlitchController glitchController, ProgressController progressController) {
+			_tweetsController   = tweetsController;
+			_glitchController   = glitchController;
+			_progressController = progressController;
 		}
 
 		public override void Init() {
@@ -136,6 +138,7 @@ namespace Game.State {
 		}
 
 		void HandleQuestFinish(QuestCollection.QuestInfo info) {
+			_progressController.FinishGame(_questIndex.ToString(), () => {});
 			_questIndex++;
 
 			if ( _pendingQuestEvents.Count > 0 ) {

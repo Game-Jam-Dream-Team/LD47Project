@@ -31,7 +31,7 @@ namespace Game.State {
 			TweetsController   = AddController(new TweetsController());
 			ProgressController = AddController(new ProgressController(unityContext));
 			GlitchController   = AddController(new GlitchController());
-			QuestController    = AddController(new QuestController(TweetsController, GlitchController));
+			QuestController    = AddController(new QuestController(TweetsController, GlitchController, ProgressController));
 			UpdateController   = AddController(new TweetUpdateController(QuestController));
 		}
 
