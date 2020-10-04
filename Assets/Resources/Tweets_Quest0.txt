@@ -1,15 +1,12 @@
-1|1
-QUEST 0 TWEET #1 WITH SLIDE SHOW
+17|1
+#id:1000
+
 ######
-1
-QUEST 0 TWEET #2
+16
+#id:1001
+#commentIds:1002
+Hello Fast delievery @FastDelievery_ When can I expect the delivery of my product....?
 ######
-1
-QUEST 0 TWEET #3
-######
-1
-QUEST 0 TWEET #4
-######
-1
-QUEST 0 TWEET #5
-######
+15
+#id:1002
+Hello! Please tell us your order number

@@ -14,11 +14,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   QuestInfos:
   - ReplyId: 0
-    CorrectAnswer: 42
+    CorrectAnswer: 192
     OneShotGlitch: 1
     BaseGlitchIncrease: 0.001
     QuestEvents:
     - id: 0
+    - id: 1
+    - id: 2
   references:
     version: 1
     00000000:
@@ -26,8 +28,27 @@ MonoBehaviour:
       data:
         Trigger:
           Type: 0
-          Arg: 
+          Arg: 1000
+        OneShotGlitch: 0.5
+        BaseGlitchIncrease: 0
+        SenderId: 16
+        NewAvatar: {fileID: 21300000, guid: 1ba386aafd2a54baebf9fea5889fe7ad, type: 3}
+    00000001:
+      type: {class: SpawnCommentQuestEvent, ns: Game.Common.Quests, asm: Assembly-CSharp}
+      data:
+        Trigger:
+          Type: 0
+          Arg: 1000
         OneShotGlitch: 0
         BaseGlitchIncrease: 0
-        SenderId: 0
-        NewAvatar: {fileID: 0}
+        ParentTweetId: 1001
+        TweetId: 1003
+    00000002:
+      type: {class: RemoveTweetQuestEvent, ns: Game.Common.Quests, asm: Assembly-CSharp}
+      data:
+        Trigger:
+          Type: 0
+          Arg: 1000
+        OneShotGlitch: 0
+        BaseGlitchIncrease: 0
+        TweetId: 1000
