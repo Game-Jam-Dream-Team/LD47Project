@@ -123,9 +123,9 @@ namespace Game.State {
 				(int.Parse(trigger.Arg) == parentTweetId));
 		}
 
-		public void OnRetweet(int tweetId) {
+		public void OnPlayerRetweetChanged(int tweetId, bool playerRetweet) {
 			if ( _curRetweetChain != null ) {
-				if ( _curRetweetChain[_curRetweetChainIndex] == tweetId ) {
+				if ( playerRetweet && (_curRetweetChain[_curRetweetChainIndex] == tweetId) ) {
 					++_curRetweetChainIndex;
 					if ( _curRetweetChainIndex == _curRetweetChain.Count ) {
 						var chainId = _curRetweetChainId;
@@ -144,6 +144,15 @@ namespace Game.State {
 			_tweetsController.SetPlayerRetweet(tweetId, false);
 		}
 
+		public void OnPlayerLikeChanged(int tweetId, bool playerLike) {
+			if ( playerLike ) {
+				if ( !TryFireQuestEvents(trigger =>
+					(trigger.Type == QuestEventTriggerType.PlayerLikeSet) && (int.Parse(trigger.Arg) == tweetId)) ) {
+					_tweetsController.SetPlayerLike(tweetId, false);
+				}
+			}
+		}
+
 		void OnQuestStarted(int questIndex) {
 			TryFireQuestEvents(trigger =>
 				(trigger.Type == QuestEventTriggerType.QuestStarted) && (int.Parse(trigger.Arg) == questIndex));
@@ -154,18 +163,21 @@ namespace Game.State {
 				(trigger.Type == QuestEventTriggerType.RetweetChainFinished) && (int.Parse(trigger.Arg) == chainId));
 		}
 
-		void TryFireQuestEvents(Func<QuestEventTrigger, bool> triggerChecker) {
+		bool TryFireQuestEvents(Func<QuestEventTrigger, bool> triggerChecker) {
 			if ( triggerChecker == null ) {
 				Debug.LogError("TriggerChecker is null");
-				return;
+				return false;
 			}
+			var res = false;
 			for ( var i = _pendingQuestEvents.Count - 1; i >= 0; i-- ) {
 				var questEvent = _pendingQuestEvents[i];
 				if ( triggerChecker(questEvent.Trigger) ) {
 					FireEvent(questEvent);
 					_pendingQuestEvents.RemoveAt(i);
+					res = true;
 				}
 			}
+			return res;
 		}
 
 		void FireEvent(BaseQuestEvent baseQuestEvent) {

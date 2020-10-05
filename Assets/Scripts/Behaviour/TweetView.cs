@@ -14,21 +14,21 @@ namespace Game.Behaviour {
 	public sealed class TweetView : MonoBehaviour {
 		const string NameTemplate = "<b>{0}</b><color=#aaaaaa>{1}</color>";
 
-		public Image      Avatar;
-		public TMP_Text   NameText;
-		public TMP_Text   MessageText;
-		public Button     CommentButton;
-		public TMP_Text   CommentsText;
-		public Image      LikeIcon;
-		public Button     LikeButton;
-		public TMP_Text   LikesText;
-		public Image      RetweetIcon;
-		public Button     RetweetButton;
-		public TMP_Text   RetweetsText;
-		public GameObject TweetImageRoot;
-		public Image      TweetImage;
-		public Button     TweetImageButton;
-		public GameObject AgeRestrictionRoot;
+		public Image       Avatar;
+		public TMP_Text    NameText;
+		public TMP_Text    MessageText;
+		public Button      CommentButton;
+		public TMP_Text    CommentsText;
+		public Image       LikeIcon;
+		public PressButton LikeButton;
+		public TMP_Text    LikesText;
+		public Image       RetweetIcon;
+		public PressButton RetweetButton;
+		public TMP_Text    RetweetsText;
+		public GameObject  TweetImageRoot;
+		public Image       TweetImage;
+		public Button      TweetImageButton;
+		public GameObject  AgeRestrictionRoot;
 		[Space]
 		public HorizontalLayoutGroup LayoutGroup;
 		public RectTransform         RightAreaTransform;
@@ -48,11 +48,19 @@ namespace Game.Behaviour {
 		TweetSpritesCollection _tweetSpritesCollection;
 
 		void OnDestroy() {
+			LikeButton.OnPressed     -= OnLikesPressed;
+			LikeButton.OnReleased    -= OnLikesReleased;
+			RetweetButton.OnPressed  -= OnRetweetsPressed;
+			RetweetButton.OnReleased -= OnRetweetsReleased;
 			if ( _tweet != null ) {
+				TryReleaseFakeLike();
+				TryReleaseFakeRetweet();
 				_tweet.OnCommentsCountChanged -= OnCommentsCountChanged;
 				_tweet.OnLikesCountChanged    -= UpdateLikesCount;
 				_tweet.OnRetweetsCountChanged -= UpdateRetweetsCount;
 				_tweet.OnMessageChanged       -= OnTweetMessageChanged;
+				_tweet.OnPlayerLikeChanged    -= OnPlayerLikeChanged;
+				_tweet.OnPlayerRetweetChanged -= OnPlayerRetweetChanged;
 			}
 		}
 
@@ -134,7 +142,11 @@ namespace Game.Behaviour {
 			_tweetSpritesCollection = Resources.Load<TweetSpritesCollection>("TweetSpritesCollection");
 
 			CommentButton.onClick.AddListener(OnCommentsClick);
+			LikeButton.OnPressed  += OnLikesPressed;
+			LikeButton.OnReleased += OnLikesReleased;
 			LikeButton.onClick.AddListener(OnLikesClick);
+			RetweetButton.OnPressed  += OnRetweetsPressed;
+			RetweetButton.OnReleased += OnRetweetsReleased;
 			RetweetButton.onClick.AddListener(OnRetweetsClick);
 			TweetImageButton.onClick.AddListener(OnImageClick);
 
@@ -225,6 +237,8 @@ namespace Game.Behaviour {
 				_tweet.OnLikesCountChanged    -= UpdateLikesCount;
 				_tweet.OnRetweetsCountChanged -= UpdateRetweetsCount;
 				_tweet.OnMessageChanged       -= OnTweetMessageChanged;
+				_tweet.OnPlayerLikeChanged    -= OnPlayerLikeChanged;
+				_tweet.OnPlayerRetweetChanged -= OnPlayerRetweetChanged;
 
 				_tweet = null;
 
@@ -256,16 +270,59 @@ namespace Game.Behaviour {
 		void OnCommentsClick() {
 		}
 
-		void OnLikesClick() {
+		bool _fakeLike;
+		void OnLikesPressed() {
 			var state = _tweetsController.GetPlayerLike(_tweet.Id);
-			_tweetsController.SetPlayerLike(_tweet.Id, !state);
+			if ( !state ) {
+				_tweetsController.SetPlayerLike(_tweet.Id, true);
+				_fakeLike = true;
+			}
+		}
+
+		void OnLikesReleased() {
+			TryReleaseFakeLike();
+		}
+
+		void TryReleaseFakeLike() {
+			if ( _fakeLike ) {
+				_tweetsController.SetPlayerLike(_tweet.Id, false);
+				_fakeLike = false;
+			}
+		}
+
+		void OnLikesClick() {
+			var state    = _tweetsController.GetPlayerLike(_tweet.Id);
+			var newState = !state;
+			_tweetsController.SetPlayerLike(_tweet.Id, newState);
+			_questController.OnPlayerLikeChanged(_tweet.Id, newState);
+		}
+
+		bool _fakeRetweet;
+		void OnRetweetsPressed() {
+			var state = _tweetsController.GetPlayerRetweet(_tweet.Id);
+			if ( !state ) {
+				_tweetsController.SetPlayerRetweet(_tweet.Id, true);
+				_fakeRetweet = true;
+			}
+
+		}
+
+		void OnRetweetsReleased() {
+			TryReleaseFakeRetweet();
+		}
+
+		void TryReleaseFakeRetweet() {
+			if ( _fakeRetweet ) {
+				_tweetsController.SetPlayerRetweet(_tweet.Id, false);
+				_fakeRetweet = false;
+			}
 		}
 
 		void OnRetweetsClick() {
-			var state = _tweetsController.GetPlayerRetweet(_tweet.Id);
-			_tweetsController.SetPlayerRetweet(_tweet.Id, !state);
-			// TODO: rewrite me
-			//_questController.OnRetweet(_tweet.Id);
+			var state    = _tweetsController.GetPlayerRetweet(_tweet.Id);
+			var newState = !state;
+			_tweetsController.SetPlayerRetweet(_tweet.Id, newState);
+			_questController.OnPlayerRetweetChanged(_tweet.Id, newState);
 		}
 
 		void OnImageClick() {

@@ -241,7 +241,7 @@ GameObject:
   - component: {fileID: 5573210416067862660}
   - component: {fileID: 3770264190082170927}
   - component: {fileID: 6291639306271173113}
-  - component: {fileID: 8067021380086487463}
+  - component: {fileID: 5226991328877895538}
   m_Layer: 5
   m_Name: TweetButton
   m_TagString: Untagged
@@ -294,7 +294,7 @@ MonoBehaviour:
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
---- !u!114 &8067021380086487463
+--- !u!114 &5226991328877895538
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -303,7 +303,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 8991353229619852968}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
+  m_Script: {fileID: 11500000, guid: facefefd47464477ab674b8bc0f02e6e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   m_Navigation:
