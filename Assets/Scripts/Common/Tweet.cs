@@ -103,5 +103,9 @@ namespace Game.Common {
 				OnCommentsCountChanged?.Invoke(CommentsCount);
 			}
 		}
+
+		public override string ToString() {
+			return $"Id: {Id}, Type: {Type}, SenderId: {SenderId}, ImageId: {ImageId}, Comments: {string.Join(", ", CommentIds)}, Message: {_message}";
+		}
 	}
 }
