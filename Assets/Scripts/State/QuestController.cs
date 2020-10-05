@@ -196,7 +196,14 @@ namespace Game.State {
 				}
 				case QuestEventType.RemoveTweet when baseQuestEvent is RemoveTweetQuestEvent questEvent: {
 					_tweetsController.RemoveTweet(_tweetsController.GetTweetById(questEvent.TweetId));
-					SetupCurrentTweets();
+					var newCurrentTweets = CurrentTweets.ToList();
+					for ( var i = 0; i < newCurrentTweets.Count; ++i ) {
+						if ( newCurrentTweets[i].Id == questEvent.TweetId ) {
+							newCurrentTweets.RemoveAt(i);
+							break;
+						}
+					}
+					CurrentTweets = newCurrentTweets.ToArray();
 					TweetsUpdated();
 					break;
 				}
@@ -271,10 +278,8 @@ namespace Game.State {
 				GameFinish();
 			}
 
-			SetupCurrentTweets();
 			_glitchController.AddConstantly(info.BaseGlitchIncrease);
 			_glitchController.AddOneShot(info.OneShotGlitch, QuestFinishGlitchTime);
-			TweetsUpdated();
 
 			if ( questInfo != null ) {
 				OnQuestStarted(_questIndex);
@@ -282,11 +287,8 @@ namespace Game.State {
 		}
 
 		void SetupCurrentTweets() {
-			if ( !Enum.TryParse<TweetType>("Quest" + _questIndex, out var questType) ) {
-				return;
-			}
 			var currentTweets = _tweetsController.GetRootTweetsByType(
-					new TweetType[] { questType, TweetType.Player },
+					new TweetType[] { TweetType.Quest, TweetType.Player },
 					OtherTweetsCount, TweetType.Filler, TweetType.Generated)
 				.ToArray();
 			Shuffle(currentTweets);
@@ -302,6 +304,7 @@ namespace Game.State {
 				tmp.Insert(1, secondTweet);
 			}
 			CurrentTweets = tmp.ToArray();
+			TweetsUpdated();
 		}
 
 		void Shuffle(Tweet[] tweets) {
