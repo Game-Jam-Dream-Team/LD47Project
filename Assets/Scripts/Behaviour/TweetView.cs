@@ -167,7 +167,7 @@ namespace Game.Behaviour {
 
 			_questController.OnSenderAvatarChanged += OnSenderAvatarChanged;
 			_questController.OnTweetImageChanged   += OnTweetImageChanged;
-			Tweet.OnMessageChanged                += OnTweetMessageChanged;
+			Tweet.OnMessageChanged                 += OnTweetMessageChanged;
 
 			var senderInfo = _senderCollection.GetSenderInfo(Tweet.SenderId);
 			Avatar.sprite = senderInfo.OverrideAvatar ? senderInfo.OverrideAvatar : senderInfo.Avatar;
@@ -183,7 +183,7 @@ namespace Game.Behaviour {
 			} else {
 				TweetImageRoot.SetActive(true);
 				TweetImage.sprite = _tweetSpritesCollection.GetTweetSprite(Tweet.Id, Tweet.ImageId);
-				if ( _tweetSpritesCollection.IsAgeRestricted(Tweet.ImageId) ) {
+				if ( _tweetSpritesCollection.IsAgeRestricted(Tweet.Id, Tweet.ImageId) ) {
 					AgeRestrictionRoot.SetActive(!_ageController.IsAdult);
 					_ageController.OnIsAdultChanged += OnIsAdultChanged;
 				}
@@ -216,11 +216,25 @@ namespace Game.Behaviour {
 			Avatar.sprite = newAvatar;
 		}
 
-		void OnTweetImageChanged(int tweetId, Sprite newImage) {
+		void OnTweetImageChanged(int tweetId, Sprite newImage, bool ageRestricted) {
 			if ( Tweet.Id != tweetId ) {
 				return;
 			}
 			TweetImage.sprite = newImage;
+
+			var needUpdate = !TweetImageRoot.activeSelf;
+			TweetImageRoot.SetActive(true);
+			TweetImage.sprite = _tweetSpritesCollection.GetTweetSprite(Tweet.Id, Tweet.ImageId);
+			if ( ageRestricted ) {
+				AgeRestrictionRoot.SetActive(!_ageController.IsAdult);
+				_ageController.OnIsAdultChanged += OnIsAdultChanged;
+			} else {
+				AgeRestrictionRoot.SetActive(false);
+			}
+			if ( needUpdate ) {
+				_feedView.UpdateTweetViewSize(this);
+				LayoutRebuilder.ForceRebuildLayoutImmediate(transform as RectTransform);
+			}
 		}
 
 		void OnIsAdultChanged(bool isAdult) {

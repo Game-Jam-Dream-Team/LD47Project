@@ -7,6 +7,7 @@ namespace Game.Common.Quests {
 	public sealed class ChangeTweetImageQuestEvent : BaseQuestEvent {
 		public int    TweetId;
 		public Sprite NewImage;
+		public bool   AgeRestricted;
 
 		public override QuestEventType Type => QuestEventType.ChangeTweetImage;
 	}

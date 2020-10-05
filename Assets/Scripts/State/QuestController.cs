@@ -41,9 +41,9 @@ namespace Game.State {
 		public event Action TweetsUpdated = () => {};
 		public event Action GameFinish    = () => {};
 
-		public event Action<int, Sprite> OnSenderAvatarChanged;
-		public event Action<int, Sprite> OnTweetImageChanged;
-		public event Action<Tweet, int>  OnCommentSpawned;
+		public event Action<int, Sprite>       OnSenderAvatarChanged;
+		public event Action<int, Sprite, bool> OnTweetImageChanged;
+		public event Action<Tweet, int>        OnCommentSpawned;
 
 		public Tweet[] CurrentTweets { get; private set; } = new Tweet[0];
 
@@ -207,8 +207,9 @@ namespace Game.State {
 					break;
 				}
 				case QuestEventType.ChangeTweetImage when baseQuestEvent is ChangeTweetImageQuestEvent questEvent: {
-					_tweetSpritesCollection.SetOverrideSprite(questEvent.TweetId, questEvent.NewImage);
-					OnTweetImageChanged?.Invoke(questEvent.TweetId, questEvent.NewImage);
+					_tweetSpritesCollection.SetOverrideSprite(questEvent.TweetId, questEvent.NewImage,
+						questEvent.AgeRestricted);
+					OnTweetImageChanged?.Invoke(questEvent.TweetId, questEvent.NewImage, questEvent.AgeRestricted);
 					break;
 				}
 				case QuestEventType.ChangeTweetMessage when baseQuestEvent is ChangeTweetMessageQuestEvent questEvent: {

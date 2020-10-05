@@ -262,6 +262,28 @@ namespace Game.Behaviour {
 			HideAllReplies();
 		}
 
+		public void UpdateTweetViewSize(TweetView tweetView) {
+			var tweetViewIndex = _instances.IndexOf(tweetView);
+			if ( tweetViewIndex < 0 ) {
+				Debug.LogError("Can't find TweetView index");
+				return;
+			}
+			var nextTweetView = _instances[(tweetViewIndex + 1) % _instances.Count];
+			if ( nextTweetView.transform.localPosition.y > tweetView.transform.localPosition.y ) {
+				return;
+			}
+			var diff = tweetView.transform.localPosition.y - tweetView.GetHeight() -
+			           nextTweetView.transform.localPosition.y;
+			foreach ( var instance in _instances ) {
+				if ( instance == tweetView ) {
+					continue;
+				}
+				if ( instance.transform.localPosition.y < tweetView.transform.localPosition.y ) {
+					instance.transform.Translate(Vector3.up * diff);
+				}
+			}
+		}
+
 		void HideAllReplies() {
 			var copy = new List<TweetView>(_instances);
 			foreach ( var instance in copy ) {

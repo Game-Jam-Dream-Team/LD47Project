@@ -24,20 +24,27 @@ namespace Game.Behaviour {
 		sealed class OverrideSprite {
 			public int    TweetId;
 			public Sprite Sprite;
+			public bool   AgeRestricted;
 		}
 
 		public List<TweetSpriteInfo> TweetSpriteInfos = new List<TweetSpriteInfo>();
 
 		readonly List<OverrideSprite> _overrideSprites = new List<OverrideSprite>();
 
-		public void SetOverrideSprite(int tweetId, Sprite overrideSprite) {
+		public void SetOverrideSprite(int tweetId, Sprite overrideSprite, bool ageRestricted) {
 			_overrideSprites.Add(new OverrideSprite {
-				TweetId = tweetId,
-				Sprite  = overrideSprite
+				TweetId       = tweetId,
+				Sprite        = overrideSprite,
+				AgeRestricted = ageRestricted
 			});
 		}
 
-		public bool IsAgeRestricted(int tweetSpriteId) {
+		public bool IsAgeRestricted(int tweetId, int tweetSpriteId) {
+			foreach ( var overrideSprite in _overrideSprites ) {
+				if ( overrideSprite.TweetId == tweetId ) {
+					return overrideSprite.AgeRestricted;
+				}
+			}
 			foreach ( var tweetSpriteInfo in TweetSpriteInfos ) {
 				if ( tweetSpriteInfo.Id == tweetSpriteId ) {
 					return tweetSpriteInfo.AgeRestricted;
@@ -63,6 +70,9 @@ namespace Game.Behaviour {
 		}
 
 		public List<TimedSprite> GetTweetSprites(int tweetSpriteId) {
+			if ( tweetSpriteId == -1 ) {
+				return null;
+			}
 			foreach ( var tweetSpriteInfo in TweetSpriteInfos ) {
 				if ( tweetSpriteInfo.Id == tweetSpriteId ) {
 					return tweetSpriteInfo.Sprites;

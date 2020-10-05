@@ -36,6 +36,15 @@ MonoBehaviour:
     - id: 5
     - id: 6
     - id: 7
+  - ReplyId: 0
+    CorrectAnswer: 75
+    OneShotGlitch: 1
+    BaseGlitchIncrease: 0.001
+    QuestEvents:
+    - id: 8
+    - id: 9
+    - id: 10
+    - id: 11
   references:
     version: 1
     00000000:
@@ -77,6 +86,7 @@ MonoBehaviour:
         BaseGlitchIncrease: 0
         TweetId: 2000
         NewImage: {fileID: 21300000, guid: 14ec799011e9941d8a666f866081ec41, type: 3}
+        AgeRestricted: 0
     00000004:
       type: {class: ChangeTweetMessageQuestEvent, ns: Game.Common.Quests, asm: Assembly-CSharp}
       data:
@@ -117,3 +127,43 @@ MonoBehaviour:
         BaseGlitchIncrease: 0
         ParentTweetId: 3000
         TweetId: 3002
+    00000008:
+      type: {class: ChangeTweetLikesCountQuestEvent, ns: Game.Common.Quests, asm: Assembly-CSharp}
+      data:
+        Trigger:
+          Type: 1
+          Arg: 
+        OneShotGlitch: 0
+        BaseGlitchIncrease: 0
+        TweetId: 4000
+        NewLikesCount: 49
+    00000009:
+      type: {class: ChangeTweetMessageQuestEvent, ns: Game.Common.Quests, asm: Assembly-CSharp}
+      data:
+        Trigger:
+          Type: 4
+          Arg: 4000
+        OneShotGlitch: 0.8
+        BaseGlitchIncrease: 0
+        TweetId: 4000
+        ReservedTweetId: 4001
+    0000000A:
+      type: {class: ChangeTweetImageQuestEvent, ns: Game.Common.Quests, asm: Assembly-CSharp}
+      data:
+        Trigger:
+          Type: 4
+          Arg: 4000
+        OneShotGlitch: 0
+        BaseGlitchIncrease: 0
+        TweetId: 4000
+        NewImage: {fileID: 21300000, guid: a838a0aa2b9a6487d8b6afa1187e59a4, type: 3}
+        AgeRestricted: 1
+    0000000B:
+      type: {class: ChangeCanChangeAgeQuestEvent, ns: Game.Common.Quests, asm: Assembly-CSharp}
+      data:
+        Trigger:
+          Type: 4
+          Arg: 4000
+        OneShotGlitch: 0
+        BaseGlitchIncrease: 0
+        NewCanChangeAge: 1

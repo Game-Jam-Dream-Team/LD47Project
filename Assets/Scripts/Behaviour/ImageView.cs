@@ -61,7 +61,7 @@ namespace Game.Behaviour {
 			Background.SetActive(true);
 			_curTweet = tweet;
 			_sprites  = _tweetSpritesCollection.GetTweetSprites(tweet.ImageId);
-			if ( _sprites.Count > 0 ) {
+			if ( (_sprites != null) && (_sprites.Count > 0) ) {
 				_index = 0;
 				_timer = 0;
 				SetupTimedSprite(_index);

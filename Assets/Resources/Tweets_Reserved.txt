@@ -13,3 +13,7 @@ I hate people, I don't care what you say
 3000
 #id:3002
 What? You know what? I should' ve deleted this stupid app like 2 years ago!! GOODBYE
+######
+4000
+#id:4001
+
