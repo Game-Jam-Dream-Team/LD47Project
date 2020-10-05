@@ -4,7 +4,10 @@ using UnityEngine.EventSystems;
 using System.Collections;
 using System.Collections.Generic;
 
+using Game.Common;
 using Game.State;
+
+using JetBrains.Annotations;
 
 using SG;
 
@@ -29,7 +32,8 @@ namespace Game.Behaviour {
 
 		void Start() {
 			UpdateLayout();
-			GameState.Instance.QuestController.TweetsUpdated += UpdateLayoutDelayed;
+			GameState.Instance.QuestController.TweetsUpdated    += UpdateLayoutDelayed;
+			GameState.Instance.QuestController.OnCommentSpawned += OnCommentAdded;
 		}
 
 		void OnDestroy() {
@@ -148,7 +152,7 @@ namespace Game.Behaviour {
 			var replyTweetView = Add(offset, index);
 			replyTweetView.TweetRoot.SetActive(false);
 			replyTweetView.ReplyRoot.SetActive(true);
-			replyTweetView.InitReply(tweet);
+			replyTweetView.InitReply(tweet, this);
 			replyTweetView.transform.SetSiblingIndex(prevTweetView.transform.GetSiblingIndex() + 1);
 			var instanceOffset = Vector3.down * (replyTweetView.GetHeight() + 25f);
 			foreach ( var instance in _instances ) {
@@ -186,6 +190,86 @@ namespace Game.Behaviour {
 			}
 			replyTweetView.PlayerCommentView.DeinitTweet();
 			_pool.ReturnObjectToPool(replyTweetView.GetComponent<PoolObject>());
+		}
+
+		[UsedImplicitly]
+		public void OnCommentAdded(Tweet parentTweet, int childIndex) {
+			TweetView tweetView      = null;
+			var       tweetViewIndex = -1;
+			for ( var i = 0; i < _instances.Count; i++ ) {
+				var instance = _instances[i];
+				if ( instance.Tweet == parentTweet ) {
+					tweetView      = instance;
+					tweetViewIndex = i;
+					break;
+				}
+			}
+			if ( !tweetView ) {
+				Debug.LogError("Can't find parent TweetView instance");
+				return;
+			}
+
+			TweetView prevTweetView;
+			int       index;
+			if ( parentTweet.CommentIds.Count == 1 ) {
+				prevTweetView = tweetView;
+				index         = tweetViewIndex + 1;
+			} else {
+				prevTweetView = _instances[(tweetViewIndex + childIndex) % _instances.Count];
+				index         = (tweetViewIndex + childIndex + 1) % _instances.Count;
+			}
+			var offset           = prevTweetView.transform.localPosition.y - prevTweetView.GetHeight();
+			var commentTweetView = Add(offset, index);
+			var tc = GameState.Instance.TweetsController;
+			var ac = GameState.Instance.AgeController;
+			var qc = GameState.Instance.QuestController;
+			commentTweetView.TweetRoot.SetActive(true);
+			commentTweetView.ReplyRoot.SetActive(false);
+			commentTweetView.InitTweet(this, tc, ac, qc,
+				tc.GetTweetById(parentTweet.CommentIds[childIndex]), false);
+			commentTweetView.transform.SetSiblingIndex(prevTweetView.transform.GetSiblingIndex() + 1);
+			var instanceOffset = Vector3.down * (commentTweetView.GetHeight() + 50f);
+			foreach ( var instance in _instances ) {
+				if ( instance == commentTweetView ) {
+					continue;
+				}
+				if ( instance.transform.localPosition.y < prevTweetView.transform.localPosition.y ) {
+					instance.transform.Translate(instanceOffset);
+				}
+			}
+			// HideAllReplies();
+		}
+
+		public void OnTweetViewRemoved(TweetView tweetView) {
+			var tweetViewIndex = _instances.IndexOf(tweetView);
+			if ( tweetViewIndex < 0 ) {
+				Debug.LogError("Can't find TweetView index");
+				return;
+			}
+
+			var height = tweetView.GetHeight();
+			var border = tweetView.transform.localPosition.y;
+			_instances.RemoveAt(tweetViewIndex);
+			tweetView.DeinitTweet();
+			tweetView.PlayerCommentView.DeinitTweet();
+			_pool.ReturnObjectToPool(tweetView.GetComponent<PoolObject>());
+			var instanceOffset = Vector3.up * height;
+			foreach ( var instance in _instances ) {
+				if ( instance.transform.localPosition.y < border ) {
+					instance.transform.Translate(instanceOffset);
+				}
+			}
+			HideAllReplies();
+		}
+
+		void HideAllReplies() {
+			var copy = new List<TweetView>(_instances);
+			foreach ( var instance in copy ) {
+				if ( _instances.Contains(instance) && instance.ReplyShown ) {
+					HideReply(instance);
+					instance.ReplyShown = false;
+				}
+			}
 		}
 
 		public void OnDrag(PointerEventData eventData) {

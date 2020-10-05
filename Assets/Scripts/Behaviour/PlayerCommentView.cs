@@ -13,14 +13,16 @@ namespace Game.Behaviour {
 		public TMP_InputField InputField;
 		public Button         SendCommentButton;
 
-		Tweet _mainTweet;
+		Tweet           _mainTweet;
+		TweetsFeedView2 _feedView;
 
 		bool _isCommonInit;
 
-		public void InitTweet(Tweet mainTweet) {
+		public void InitTweet(Tweet mainTweet, TweetsFeedView2 feedView) {
 			TryCommonInit();
 
 			_mainTweet = mainTweet;
+			_feedView  = feedView;
 
 			InputField.text = string.Empty;
 		}
@@ -37,11 +39,14 @@ namespace Game.Behaviour {
 			var type = qc.TryReply(_mainTweet.Id, message)
 				? TweetType.Comment
 				: TweetType.Temporary;
+			var childIndex = _mainTweet.CommentIds.Count;
 			var tweet = new Tweet(tweetId, type, senderId, message, -1, new List<int>());
 			GameState.Instance.TweetsController.AddComment(_mainTweet, tweet);
-			GameState.Instance.QuestController.OnCommentPosted(_mainTweet.Id);
+			_feedView.OnCommentAdded(_mainTweet, childIndex);
+			if ( GameState.Instance.QuestController.OnCommentPosted(_mainTweet.Id) ) {
+				tweet.Type = TweetType.Comment;
+			}
 			InputField.text = string.Empty;
-			SendMessageUpwards("UpdateLayoutDelayed", SendMessageOptions.DontRequireReceiver);
 		}
 
 		void TryCommonInit() {

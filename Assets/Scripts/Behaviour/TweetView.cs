@@ -39,8 +39,6 @@ namespace Game.Behaviour {
 
 		TweetsFeedView2 _feedView;
 
-		bool _replyShown;
-
 		TweetsController _tweetsController;
 		AgeController    _ageController;
 		QuestController  _questController;
@@ -50,6 +48,8 @@ namespace Game.Behaviour {
 		TweetSpritesCollection _tweetSpritesCollection;
 
 		public Tweet Tweet { get; private set; }
+
+		public bool ReplyShown { get; set; }
 
 		void OnDestroy() {
 			LikeButton.OnPressed     -= OnLikesPressed;
@@ -102,7 +102,7 @@ namespace Game.Behaviour {
 				if ( accIndex + curTweet.CommentIds.Count + 1 == index ) {
 					// TODO: init reply
 					tweet = curTweet;
-					InitReply(tweet);
+					InitReply(tweet, null);
 					isTweet = false;
 					break;
 				}
@@ -131,10 +131,10 @@ namespace Game.Behaviour {
 			LayoutRebuilder.ForceRebuildLayoutImmediate(transform.parent as RectTransform);
 		}
 
-		public void InitReply(Tweet tweet) {
+		public void InitReply(Tweet tweet, TweetsFeedView2 feedView) {
 			TweetRoot.SetActive(false);
 			ReplyRoot.SetActive(true);
-			PlayerCommentView.InitTweet(tweet);
+			PlayerCommentView.InitTweet(tweet, feedView);
 		}
 
 		public void TryCommonInit() {
@@ -232,13 +232,17 @@ namespace Game.Behaviour {
 		}
 
 		IEnumerator TempDisappearCoro() {
-			yield return new WaitForSeconds(2f);
+			yield return new WaitForSeconds(3f);
+			if ( Tweet.Type != TweetType.Temporary ) {
+				yield break;
+			}
 			_tweetsController.RemoveTweet(Tweet);
+			_feedView.OnTweetViewRemoved(this);
 		}
 
 		public void DeinitTweet() {
 			_feedView   = null;
-			_replyShown = false;
+			ReplyShown = false;
 			if ( Tweet != null ) {
 				if ( Tweet.Type == TweetType.Temporary ) {
 					StopAllCoroutines();
@@ -279,12 +283,12 @@ namespace Game.Behaviour {
 		}
 
 		void OnCommentsClick() {
-			if ( _replyShown ) {
+			if ( ReplyShown ) {
 				_feedView.HideReply(this);
-				_replyShown = false;
+				ReplyShown = false;
 			} else {
 				_feedView.ShowReply(this);
-				_replyShown = true;
+				ReplyShown = true;
 			}
 		}
 
@@ -348,14 +352,7 @@ namespace Game.Behaviour {
 		}
 
 		void OnCommentsCountChanged(int commentsCount) {
-			var tweet            = Tweet;
-			var feedView         = _feedView;
-			var tweetsController = _tweetsController;
-			var ageController    = _ageController;
-			var questController  = _questController;
-			DeinitTweet();
-			InitTweet(feedView, tweetsController, ageController, questController, tweet);
-			SendMessageUpwards("UpdateLayoutDelayed", SendMessageOptions.DontRequireReceiver);
+			CommentsText.text = commentsCount.ToString();
 		}
 
 		void UpdateLikesCount(int likesCount) {

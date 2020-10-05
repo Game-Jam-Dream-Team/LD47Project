@@ -43,6 +43,7 @@ namespace Game.State {
 
 		public event Action<int, Sprite> OnSenderAvatarChanged;
 		public event Action<int, Sprite> OnTweetImageChanged;
+		public event Action<Tweet, int>  OnCommentSpawned;
 
 		public Tweet[] CurrentTweets { get; private set; } = new Tweet[0];
 
@@ -117,10 +118,8 @@ namespace Game.State {
 				(trigger.Type == QuestEventTriggerType.ImageShowFinished) && (int.Parse(trigger.Arg) == tweetId));
 		}
 
-		public void OnCommentPosted(int parentTweetId) {
-			TryFireQuestEvents(trigger =>
-				(trigger.Type == QuestEventTriggerType.PlayerCommentPosted) &&
-				(int.Parse(trigger.Arg) == parentTweetId));
+		public bool OnCommentPosted(int parentTweetId) {
+			return TryFireQuestEvents(trigger => (trigger.Type == QuestEventTriggerType.PlayerCommentPosted) && (int.Parse(trigger.Arg) == parentTweetId));
 		}
 
 		public void OnPlayerRetweetChanged(int tweetId, bool playerRetweet) {
@@ -189,8 +188,9 @@ namespace Game.State {
 					break;
 				}
 				case QuestEventType.SpawnComment when baseQuestEvent is SpawnCommentQuestEvent questEvent: {
-					_tweetsController.AddComment(_tweetsController.GetTweetById(questEvent.ParentTweetId),
-						_tweetsController.GetTweetById(questEvent.TweetId));
+					var tweet = _tweetsController.GetTweetById(questEvent.ParentTweetId);
+					_tweetsController.AddComment(tweet, _tweetsController.GetTweetById(questEvent.TweetId));
+					OnCommentSpawned?.Invoke(tweet, tweet.CommentIds.Count - 1);
 					break;
 				}
 				case QuestEventType.RemoveTweet when baseQuestEvent is RemoveTweetQuestEvent questEvent: {
