@@ -59,6 +59,7 @@ namespace Game.State {
 				return;
 			}
 			_pendingQuestEvents.AddRange(questInfo.QuestEvents);
+			OnQuestStarted(_questIndex);
 		}
 
 		public override void Update() {
@@ -105,10 +106,23 @@ namespace Game.State {
 		}
 
 		public void OnImageShowFinished(int tweetId) {
+			TryFireQuestEvents(trigger =>
+				(trigger.Type == QuestEventTriggerType.ImageShowFinished) && (int.Parse(trigger.Arg) == tweetId));
+		}
+
+		void OnQuestStarted(int questIndex) {
+			TryFireQuestEvents(trigger =>
+				(trigger.Type == QuestEventTriggerType.QuestStarted) && (int.Parse(trigger.Arg) == questIndex));
+		}
+
+		void TryFireQuestEvents(Func<QuestEventTrigger, bool> triggerChecker) {
+			if ( triggerChecker == null ) {
+				Debug.LogError("TriggerChecker is null");
+				return;
+			}
 			for ( var i = _pendingQuestEvents.Count - 1; i >= 0; i-- ) {
 				var questEvent = _pendingQuestEvents[i];
-				if ( (questEvent.Trigger.Type == QuestEventTriggerType.ImageShowFinished) &&
-				     (questEvent.Trigger.Arg == tweetId.ToString()) ) {
+				if ( triggerChecker(questEvent.Trigger) ) {
 					FireEvent(questEvent);
 					_pendingQuestEvents.RemoveAt(i);
 				}
@@ -181,6 +195,10 @@ namespace Game.State {
 			_glitchController.AddConstantly(info.BaseGlitchIncrease);
 			_glitchController.AddOneShot(info.OneShotGlitch, QuestFinishGlitchTime);
 			TweetsUpdated();
+
+			if ( questInfo != null ) {
+				OnQuestStarted(_questIndex);
+			}
 		}
 
 		void SetupCurrentTweets() {
