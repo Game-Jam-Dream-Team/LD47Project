@@ -31,8 +31,8 @@ namespace Game.State {
 			TweetsController   = AddController(new TweetsController());
 			ProgressController = AddController(new ProgressController(unityContext));
 			GlitchController   = AddController(new GlitchController());
-			QuestController    = AddController(new QuestController(TweetsController, GlitchController, ProgressController));
 			AgeController      = AddController(new AgeController());
+			QuestController    = AddController(new QuestController(TweetsController, GlitchController, ProgressController, AgeController));
 		}
 
 		T AddController<T>(T controller) where T : BaseController {

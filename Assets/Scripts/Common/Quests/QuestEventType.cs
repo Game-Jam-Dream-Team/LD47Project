@@ -7,5 +7,6 @@ namespace Game.Common.Quests {
 		ChangeTweetMessage    = 4,
 		StartRetweetChain     = 5,
 		ChangeTweetLikesCount = 6,
+		ChangeCanChangeAge    = 7,
 	}
 }

@@ -21,6 +21,7 @@ namespace Game.State {
 		readonly TweetsController   _tweetsController;
 		readonly GlitchController   _glitchController;
 		readonly ProgressController _progressController;
+		readonly AgeController      _ageController;
 
 		QuestCollection        _questCollection;
 		SenderCollection       _senderCollection;
@@ -45,10 +46,12 @@ namespace Game.State {
 
 		public Tweet[] CurrentTweets { get; private set; } = new Tweet[0];
 
-		public QuestController(TweetsController tweetsController, GlitchController glitchController, ProgressController progressController) {
+		public QuestController(TweetsController tweetsController, GlitchController glitchController,
+			ProgressController progressController, AgeController ageController) {
 			_tweetsController   = tweetsController;
 			_glitchController   = glitchController;
 			_progressController = progressController;
+			_ageController      = ageController;
 		}
 
 		public override void Init() {
@@ -212,6 +215,10 @@ namespace Game.State {
 						break;
 					}
 					tweet.LikesCount = questEvent.NewLikesCount;
+					break;
+				}
+				case QuestEventType.ChangeCanChangeAge when baseQuestEvent is ChangeCanChangeAgeQuestEvent questEvent: {
+					_ageController.CanChangeAge = questEvent.NewCanChangeAge;
 					break;
 				}
 				default: {
