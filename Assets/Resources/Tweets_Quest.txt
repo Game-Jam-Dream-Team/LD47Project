@@ -25,6 +25,7 @@ I love you people, thanks for your advice
 ######
 4000
 #id:4000
+#likes:12
 If this post gets 50 likes, I'll show my pussy
 ######
 5000|5000
