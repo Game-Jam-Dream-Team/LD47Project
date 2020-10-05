@@ -283,6 +283,7 @@ namespace Game.State {
 			if ( questInfo != null ) {
 				OnQuestStarted();
 			}
+			SetupCurrentTweets();
 		}
 
 		void SetupCurrentTweets() {
