@@ -6,6 +6,7 @@ namespace Game.State {
 		public TweetsController      TweetsController   { get; private set; }
 		public ProgressController    ProgressController { get; private set; }
 		public GlitchController      GlitchController   { get; private set; }
+		public AgeController         AgeController      { get; private set; }
 		public QuestController       QuestController    { get; private set; }
 
 		readonly List<BaseController> _controllers = new List<BaseController>();
@@ -31,6 +32,7 @@ namespace Game.State {
 			ProgressController = AddController(new ProgressController(unityContext));
 			GlitchController   = AddController(new GlitchController());
 			QuestController    = AddController(new QuestController(TweetsController, GlitchController, ProgressController));
+			AgeController      = AddController(new AgeController());
 		}
 
 		T AddController<T>(T controller) where T : BaseController {

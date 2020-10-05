@@ -1,7 +1,9 @@
-﻿using System;
-
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
+
+using System;
+
+using Game.State;
 
 using TMPro;
 
@@ -31,17 +33,15 @@ namespace Game.Behaviour {
 		}
 
 		bool IsAgeShouldBeShown() {
-			// TODO: check condition
-			return true;
+			return GameState.Instance.AgeController.CanChangeAge;
 		}
 
 		void OnAgeChanged(string value) {
-			if ( !int.TryParse(value, out var intValue) ) {
+			if ( !DateTime.TryParse(value, out var date) ) {
 				return;
 			}
-			if ( intValue >= 99 ) {
-				// TODO: condition met
-			}
+			var maxBirth = DateTime.Now.AddYears(-21);
+			GameState.Instance.AgeController.IsAdult = (date <= maxBirth);
 		}
 	}
 }
