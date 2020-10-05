@@ -310,7 +310,7 @@ namespace Game.Behaviour {
 			}
 			var diff = eventData.scrollDelta.y;
 			foreach ( var instance in _instances ) {
-				instance.transform.position += Vector3.up * diff;
+				instance.transform.position += Vector3.up * -80f * diff;
 			}
 		}
 	}
