@@ -4,5 +4,6 @@ namespace Game.Common.Quests {
 		SpawnComment       = 1,
 		RemoveTweet        = 2,
 		ChangeTweetImage   = 3,
+		ChangeTweetMessage = 4,
 	}
 }

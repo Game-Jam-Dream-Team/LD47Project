@@ -48,6 +48,7 @@ namespace Game.Behaviour {
 				_tweet.OnCommentsCountChanged -= OnCommentsCountChanged;
 				_tweet.OnLikesCountChanged    -= UpdateLikesCount;
 				_tweet.OnRetweetsCountChanged -= UpdateRetweetsCount;
+				_tweet.OnMessageChanged       -= OnTweetMessageChanged;
 			}
 		}
 
@@ -142,6 +143,7 @@ namespace Game.Behaviour {
 
 			_questController.OnSenderAvatarChanged += OnSenderAvatarChanged;
 			_questController.OnTweetImageChanged   += OnTweetImageChanged;
+			_tweet.OnMessageChanged                += OnTweetMessageChanged;
 
 			var senderInfo = _senderCollection.GetSenderInfo(_tweet.SenderId);
 			Avatar.sprite = senderInfo.OverrideAvatar ? senderInfo.OverrideAvatar : senderInfo.Avatar;
@@ -184,6 +186,10 @@ namespace Game.Behaviour {
 			TweetImage.sprite = newImage;
 		}
 
+		void OnTweetMessageChanged(string newMessage) {
+			MessageText.text = newMessage;
+		}
+
 		IEnumerator TempDisappearCoro() {
 			yield return new WaitForSeconds(2f);
 			_tweetsController.RemoveTweet(_tweet);
@@ -198,6 +204,7 @@ namespace Game.Behaviour {
 				_tweet.OnCommentsCountChanged -= OnCommentsCountChanged;
 				_tweet.OnLikesCountChanged    -= UpdateLikesCount;
 				_tweet.OnRetweetsCountChanged -= UpdateRetweetsCount;
+				_tweet.OnMessageChanged       -= OnTweetMessageChanged;
 
 				_tweet = null;
 

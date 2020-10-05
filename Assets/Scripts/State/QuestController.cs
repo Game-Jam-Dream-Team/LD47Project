@@ -140,6 +140,11 @@ namespace Game.State {
 					OnTweetImageChanged?.Invoke(questEvent.TweetId, questEvent.NewImage);
 					break;
 				}
+				case QuestEventType.ChangeTweetMessage when baseQuestEvent is ChangeTweetMessageQuestEvent questEvent: {
+					_tweetsController.ReplaceTweetMessage(questEvent.TweetId,
+						_tweetsController.GetTweetById(questEvent.ReservedTweetId).Message);
+					break;
+				}
 				default: {
 					Debug.LogErrorFormat("Unsupported QuestEventType '{0}'", baseQuestEvent.Type.ToString());
 					break;

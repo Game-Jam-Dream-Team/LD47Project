@@ -75,6 +75,14 @@ namespace Game.State {
 			}
 		}
 
+		public void ReplaceTweetMessage(int tweetId, string newMessage) {
+			var tweet = GetTweetById(tweetId);
+			if ( tweet == null ) {
+				return;
+			}
+			tweet.Message = newMessage;
+		}
+
 		void LoadAllTweets() {
 			var tweetTypes = ((TweetType[]) Enum.GetValues(typeof(TweetType))).ToList();
 			tweetTypes.Remove(TweetType.Temporary);
