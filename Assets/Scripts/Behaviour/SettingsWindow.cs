@@ -2,6 +2,7 @@
 using UnityEngine.UI;
 
 using System;
+using System.Globalization;
 
 using Game.State;
 
@@ -14,12 +15,15 @@ namespace Game.Behaviour {
 		public Button         SettingsButton;
 		public Button         BackButton;
 
+		string _oldValue;
+
 		void Awake() {
 			gameObject.SetActive(false);
 			AgeBlock.SetActive(false);
 			SettingsButton.onClick.AddListener(Show);
 			BackButton.onClick.AddListener(Hide);
 			AgeInput.text = DateTime.Now.ToString("dd/MM/yyyy");
+			_oldValue = AgeInput.text;
 			AgeInput.onValueChanged.AddListener(OnAgeChanged);
 		}
 
@@ -39,11 +43,14 @@ namespace Game.Behaviour {
 		}
 
 		void OnAgeChanged(string value) {
-			if ( !DateTime.TryParse(value, out var date) ) {
+			if ( !DateTime.TryParseExact(value, new[] { "dd/mm/yyyy", "d/mm/yyyy", "dd/m/yyyy", "d/m/yyyy" },
+				CultureInfo.InvariantCulture, DateTimeStyles.None, out var date) ) {
+				AgeInput.text = _oldValue;
 				return;
 			}
 			var maxBirth = DateTime.Now.AddYears(-21);
 			GameState.Instance.AgeController.IsAdult = (date <= maxBirth);
+			_oldValue = value;
 		}
 	}
 }
