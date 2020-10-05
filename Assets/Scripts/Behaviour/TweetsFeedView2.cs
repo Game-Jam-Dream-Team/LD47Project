@@ -105,7 +105,7 @@ namespace Game.Behaviour {
 			_isAnimActive = true;
 			while ( _animTimer < AnimTime ) {
 				_animTimer += Time.deltaTime;
-				var diff = 100f;
+				var diff = 200f;
 				foreach ( var instance in _instances ) {
 					instance.transform.position += Vector3.up * diff;
 				}
