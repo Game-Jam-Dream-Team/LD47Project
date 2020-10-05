@@ -14,7 +14,9 @@ namespace Game.Behaviour {
 			}
 			var newText = text;
 			var newPos = pos;
-			newText = newText.Insert(newPos, ch.ToString());
+			newText = (pos >= newText.Length - 4)
+				? newText.Remove(pos, 1).Insert(pos, ch.ToString())
+				: newText.Insert(newPos, ch.ToString());
 			if ( DateTime.TryParseExact(newText, new[] { "dd/mm/yyyy", "d/mm/yyyy", "dd/m/yyyy", "d/m/yyyy" },
 				CultureInfo.InvariantCulture, DateTimeStyles.None, out _) ) {
 				text = newText;
