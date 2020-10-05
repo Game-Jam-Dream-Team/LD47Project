@@ -125,7 +125,7 @@ GameObject:
   - component: {fileID: 1558429223786343672}
   - component: {fileID: 291337490588712016}
   - component: {fileID: 7260917065425579349}
-  - component: {fileID: 25617571577267948}
+  - component: {fileID: 152062015310048665}
   m_Layer: 5
   m_Name: BackButton
   m_TagString: Untagged
@@ -190,7 +190,7 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!114 &25617571577267948
+--- !u!114 &152062015310048665
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -199,7 +199,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 6801330485912509747}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
+  m_Script: {fileID: 11500000, guid: facefefd47464477ab674b8bc0f02e6e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   m_Navigation:
@@ -244,7 +244,7 @@ GameObject:
   - component: {fileID: 4079840946527182065}
   - component: {fileID: 3009065482035763880}
   - component: {fileID: 3926680434134508070}
-  - component: {fileID: 6674841942089754759}
+  - component: {fileID: 7374951595777172059}
   m_Layer: 5
   m_Name: SettingsButton
   m_TagString: Untagged
@@ -309,7 +309,7 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!114 &6674841942089754759
+--- !u!114 &7374951595777172059
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -318,7 +318,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 7091983758638954090}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
+  m_Script: {fileID: 11500000, guid: facefefd47464477ab674b8bc0f02e6e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   m_Navigation:
