@@ -205,6 +205,15 @@ namespace Game.State {
 					_curRetweetChainIndex = 0;
 					break;
 				}
+				case QuestEventType.ChangeTweetLikesCount
+					when baseQuestEvent is ChangeTweetLikesCountQuestEvent questEvent: {
+					var tweet = _tweetsController.GetTweetById(questEvent.TweetId);
+					if ( tweet == null ) {
+						break;
+					}
+					tweet.LikesCount = questEvent.NewLikesCount;
+					break;
+				}
 				default: {
 					Debug.LogErrorFormat("Unsupported QuestEventType '{0}'", baseQuestEvent.Type.ToString());
 					break;
