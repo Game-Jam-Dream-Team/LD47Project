@@ -66,7 +66,7 @@ namespace Game.State {
 				return;
 			}
 			_pendingQuestEvents.AddRange(questInfo.QuestEvents);
-			OnQuestStarted(_questIndex);
+			OnQuestStarted();
 		}
 
 		public override void Update() {
@@ -153,9 +153,8 @@ namespace Game.State {
 			}
 		}
 
-		void OnQuestStarted(int questIndex) {
-			TryFireQuestEvents(trigger =>
-				(trigger.Type == QuestEventTriggerType.QuestStarted) && (int.Parse(trigger.Arg) == questIndex));
+		void OnQuestStarted() {
+			TryFireQuestEvents(trigger => (trigger.Type == QuestEventTriggerType.QuestStarted));
 		}
 
 		void OnRetweetChainFinished(int chainId) {
@@ -282,7 +281,7 @@ namespace Game.State {
 			_glitchController.AddOneShot(info.OneShotGlitch, QuestFinishGlitchTime);
 
 			if ( questInfo != null ) {
-				OnQuestStarted(_questIndex);
+				OnQuestStarted();
 			}
 		}
 
