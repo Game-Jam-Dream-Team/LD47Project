@@ -37,30 +37,34 @@ namespace Game.Behaviour {
 		public GameObject        ReplyRoot;
 		public PlayerCommentView PlayerCommentView;
 
+		TweetsFeedView2 _feedView;
+
+		bool _replyShown;
+
 		TweetsController _tweetsController;
 		AgeController    _ageController;
 		QuestController  _questController;
 
-		Tweet _tweet;
-
 		bool                   _isCommonInit;
 		SenderCollection       _senderCollection;
 		TweetSpritesCollection _tweetSpritesCollection;
+
+		public Tweet Tweet { get; private set; }
 
 		void OnDestroy() {
 			LikeButton.OnPressed     -= OnLikesPressed;
 			LikeButton.OnReleased    -= OnLikesReleased;
 			RetweetButton.OnPressed  -= OnRetweetsPressed;
 			RetweetButton.OnReleased -= OnRetweetsReleased;
-			if ( _tweet != null ) {
+			if ( Tweet != null ) {
 				TryReleaseFakeLike();
 				TryReleaseFakeRetweet();
-				_tweet.OnCommentsCountChanged -= OnCommentsCountChanged;
-				_tweet.OnLikesCountChanged    -= UpdateLikesCount;
-				_tweet.OnRetweetsCountChanged -= UpdateRetweetsCount;
-				_tweet.OnMessageChanged       -= OnTweetMessageChanged;
-				_tweet.OnPlayerLikeChanged    -= OnPlayerLikeChanged;
-				_tweet.OnPlayerRetweetChanged -= OnPlayerRetweetChanged;
+				Tweet.OnCommentsCountChanged -= OnCommentsCountChanged;
+				Tweet.OnLikesCountChanged    -= UpdateLikesCount;
+				Tweet.OnRetweetsCountChanged -= UpdateRetweetsCount;
+				Tweet.OnMessageChanged       -= OnTweetMessageChanged;
+				Tweet.OnPlayerLikeChanged    -= OnPlayerLikeChanged;
+				Tweet.OnPlayerRetweetChanged -= OnPlayerRetweetChanged;
 			}
 		}
 
@@ -70,7 +74,7 @@ namespace Game.Behaviour {
 
 		[UsedImplicitly]
 		public void ScrollCellIndex(int index) {
-			if ( _tweet != null ) {
+			if ( Tweet != null ) {
 				DeinitTweet();
 				PlayerCommentView.DeinitTweet();
 			}
@@ -122,7 +126,7 @@ namespace Game.Behaviour {
 			if ( isTweet ) {
 				TweetRoot.SetActive(true);
 				ReplyRoot.SetActive(false);
-				InitTweet(tc, ac, qc, tweet, isRoot);
+				InitTweet(null, tc, ac, qc, tweet, isRoot);
 			}
 			LayoutRebuilder.ForceRebuildLayoutImmediate(transform.parent as RectTransform);
 		}
@@ -153,32 +157,33 @@ namespace Game.Behaviour {
 			_isCommonInit = true;
 		}
 
-		public void InitTweet(TweetsController tweetsController, AgeController ageController,
+		public void InitTweet(TweetsFeedView2 feedView, TweetsController tweetsController, AgeController ageController,
 			QuestController questController, Tweet tweet, bool isRoot = true) {
+			_feedView         = feedView;
 			_tweetsController = tweetsController;
 			_ageController    = ageController;
 			_questController  = questController;
-			_tweet            = tweet;
+			Tweet             = tweet;
 
 			_questController.OnSenderAvatarChanged += OnSenderAvatarChanged;
 			_questController.OnTweetImageChanged   += OnTweetImageChanged;
-			_tweet.OnMessageChanged                += OnTweetMessageChanged;
+			Tweet.OnMessageChanged                += OnTweetMessageChanged;
 
-			var senderInfo = _senderCollection.GetSenderInfo(_tweet.SenderId);
+			var senderInfo = _senderCollection.GetSenderInfo(Tweet.SenderId);
 			Avatar.sprite = senderInfo.OverrideAvatar ? senderInfo.OverrideAvatar : senderInfo.Avatar;
 			InitSender(senderInfo.DisplayName);
-			MessageText.text = _tweet.Message;
-			CommentsText.text = _tweet.CommentsCount.ToString();
-			UpdateLikesCount(_tweet.LikesCount);
-			UpdateRetweetsCount(_tweet.RetweetsCount);
+			MessageText.text = Tweet.Message;
+			CommentsText.text = Tweet.CommentsCount.ToString();
+			UpdateLikesCount(Tweet.LikesCount);
+			UpdateRetweetsCount(Tweet.RetweetsCount);
 
 			AgeRestrictionRoot.SetActive(false);
-			if ( _tweet.ImageId == -1 ) {
+			if ( Tweet.ImageId == -1 ) {
 				TweetImageRoot.SetActive(false);
 			} else {
 				TweetImageRoot.SetActive(true);
-				TweetImage.sprite = _tweetSpritesCollection.GetTweetSprite(_tweet.Id, _tweet.ImageId);
-				if ( _tweetSpritesCollection.IsAgeRestricted(_tweet.ImageId) ) {
+				TweetImage.sprite = _tweetSpritesCollection.GetTweetSprite(Tweet.Id, Tweet.ImageId);
+				if ( _tweetSpritesCollection.IsAgeRestricted(Tweet.ImageId) ) {
 					AgeRestrictionRoot.SetActive(!_ageController.IsAdult);
 					_ageController.OnIsAdultChanged += OnIsAdultChanged;
 				}
@@ -193,26 +198,26 @@ namespace Game.Behaviour {
 				StartCoroutine(TempDisappearCoro());
 			} else {
 				if ( isRoot ) {
-					_tweet.OnCommentsCountChanged += OnCommentsCountChanged;
+					Tweet.OnCommentsCountChanged += OnCommentsCountChanged;
 				}
-				_tweet.OnLikesCountChanged    += UpdateLikesCount;
-				_tweet.OnRetweetsCountChanged += UpdateRetweetsCount;
-				_tweet.OnPlayerLikeChanged    += OnPlayerLikeChanged;
-				_tweet.OnPlayerRetweetChanged += OnPlayerRetweetChanged;
-				OnPlayerLikeChanged(_tweet.PlayerLike);
-				OnPlayerRetweetChanged(_tweet.PlayerRetweet);
+				Tweet.OnLikesCountChanged    += UpdateLikesCount;
+				Tweet.OnRetweetsCountChanged += UpdateRetweetsCount;
+				Tweet.OnPlayerLikeChanged    += OnPlayerLikeChanged;
+				Tweet.OnPlayerRetweetChanged += OnPlayerRetweetChanged;
+				OnPlayerLikeChanged(Tweet.PlayerLike);
+				OnPlayerRetweetChanged(Tweet.PlayerRetweet);
 			}
 		}
 
 		void OnSenderAvatarChanged(int senderId, Sprite newAvatar) {
-			if ( _tweet.SenderId != senderId ) {
+			if ( Tweet.SenderId != senderId ) {
 				return;
 			}
 			Avatar.sprite = newAvatar;
 		}
 
 		void OnTweetImageChanged(int tweetId, Sprite newImage) {
-			if ( _tweet.Id != tweetId ) {
+			if ( Tweet.Id != tweetId ) {
 				return;
 			}
 			TweetImage.sprite = newImage;
@@ -228,23 +233,25 @@ namespace Game.Behaviour {
 
 		IEnumerator TempDisappearCoro() {
 			yield return new WaitForSeconds(2f);
-			_tweetsController.RemoveTweet(_tweet);
+			_tweetsController.RemoveTweet(Tweet);
 		}
 
 		public void DeinitTweet() {
-			if ( _tweet != null ) {
-				if ( _tweet.Type == TweetType.Temporary ) {
+			_feedView   = null;
+			_replyShown = false;
+			if ( Tweet != null ) {
+				if ( Tweet.Type == TweetType.Temporary ) {
 					StopAllCoroutines();
-					_tweetsController.RemoveTweet(_tweet);
+					_tweetsController.RemoveTweet(Tweet);
 				}
-				_tweet.OnCommentsCountChanged -= OnCommentsCountChanged;
-				_tweet.OnLikesCountChanged    -= UpdateLikesCount;
-				_tweet.OnRetweetsCountChanged -= UpdateRetweetsCount;
-				_tweet.OnMessageChanged       -= OnTweetMessageChanged;
-				_tweet.OnPlayerLikeChanged    -= OnPlayerLikeChanged;
-				_tweet.OnPlayerRetweetChanged -= OnPlayerRetweetChanged;
+				Tweet.OnCommentsCountChanged -= OnCommentsCountChanged;
+				Tweet.OnLikesCountChanged    -= UpdateLikesCount;
+				Tweet.OnRetweetsCountChanged -= UpdateRetweetsCount;
+				Tweet.OnMessageChanged       -= OnTweetMessageChanged;
+				Tweet.OnPlayerLikeChanged    -= OnPlayerLikeChanged;
+				Tweet.OnPlayerRetweetChanged -= OnPlayerRetweetChanged;
 
-				_tweet = null;
+				Tweet = null;
 
 				_questController.OnSenderAvatarChanged -= OnSenderAvatarChanged;
 				_questController.OnTweetImageChanged   -= OnTweetImageChanged;
@@ -272,13 +279,20 @@ namespace Game.Behaviour {
 		}
 
 		void OnCommentsClick() {
+			if ( _replyShown ) {
+				_feedView.HideReply(this);
+				_replyShown = false;
+			} else {
+				_feedView.ShowReply(this);
+				_replyShown = true;
+			}
 		}
 
 		bool _fakeLike;
 		void OnLikesPressed() {
-			var state = _tweetsController.GetPlayerLike(_tweet.Id);
+			var state = _tweetsController.GetPlayerLike(Tweet.Id);
 			if ( !state ) {
-				_tweetsController.SetPlayerLike(_tweet.Id, true);
+				_tweetsController.SetPlayerLike(Tweet.Id, true);
 				_fakeLike = true;
 			}
 		}
@@ -289,23 +303,23 @@ namespace Game.Behaviour {
 
 		void TryReleaseFakeLike() {
 			if ( _fakeLike ) {
-				_tweetsController.SetPlayerLike(_tweet.Id, false);
+				_tweetsController.SetPlayerLike(Tweet.Id, false);
 				_fakeLike = false;
 			}
 		}
 
 		void OnLikesClick() {
-			var state    = _tweetsController.GetPlayerLike(_tweet.Id);
+			var state    = _tweetsController.GetPlayerLike(Tweet.Id);
 			var newState = !state;
-			_tweetsController.SetPlayerLike(_tweet.Id, newState);
-			_questController.OnPlayerLikeChanged(_tweet.Id, newState);
+			_tweetsController.SetPlayerLike(Tweet.Id, newState);
+			_questController.OnPlayerLikeChanged(Tweet.Id, newState);
 		}
 
 		bool _fakeRetweet;
 		void OnRetweetsPressed() {
-			var state = _tweetsController.GetPlayerRetweet(_tweet.Id);
+			var state = _tweetsController.GetPlayerRetweet(Tweet.Id);
 			if ( !state ) {
-				_tweetsController.SetPlayerRetweet(_tweet.Id, true);
+				_tweetsController.SetPlayerRetweet(Tweet.Id, true);
 				_fakeRetweet = true;
 			}
 
@@ -317,29 +331,30 @@ namespace Game.Behaviour {
 
 		void TryReleaseFakeRetweet() {
 			if ( _fakeRetweet ) {
-				_tweetsController.SetPlayerRetweet(_tweet.Id, false);
+				_tweetsController.SetPlayerRetweet(Tweet.Id, false);
 				_fakeRetweet = false;
 			}
 		}
 
 		void OnRetweetsClick() {
-			var state    = _tweetsController.GetPlayerRetweet(_tweet.Id);
+			var state    = _tweetsController.GetPlayerRetweet(Tweet.Id);
 			var newState = !state;
-			_tweetsController.SetPlayerRetweet(_tweet.Id, newState);
-			_questController.OnPlayerRetweetChanged(_tweet.Id, newState);
+			_tweetsController.SetPlayerRetweet(Tweet.Id, newState);
+			_questController.OnPlayerRetweetChanged(Tweet.Id, newState);
 		}
 
 		void OnImageClick() {
-			_tweetsController.ClickImage(_tweet);
+			_tweetsController.ClickImage(Tweet);
 		}
 
 		void OnCommentsCountChanged(int commentsCount) {
-			var tweet            = _tweet;
+			var tweet            = Tweet;
+			var feedView         = _feedView;
 			var tweetsController = _tweetsController;
 			var ageController    = _ageController;
 			var questController  = _questController;
 			DeinitTweet();
-			InitTweet(tweetsController, ageController, questController, tweet);
+			InitTweet(feedView, tweetsController, ageController, questController, tweet);
 			SendMessageUpwards("UpdateLayoutDelayed", SendMessageOptions.DontRequireReceiver);
 		}
 

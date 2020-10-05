@@ -79,14 +79,14 @@ namespace Game.Behaviour {
 				var tweetInstance = Add(y);
 				tweetInstance.TweetRoot.SetActive(true);
 				tweetInstance.ReplyRoot.SetActive(false);
-				tweetInstance.InitTweet(tc, ac, qc, tweet);
+				tweetInstance.InitTweet(this, tc, ac, qc, tweet);
 				y -= tweetInstance.GetHeight();
 				foreach ( var comment in tweet.CommentIds ) {
 					var commentInstance = Add(y);
 					commentInstance.TweetRoot.SetActive(true);
 					commentInstance.ReplyRoot.SetActive(false);
 					var commentTweet = tc.GetTweetById(comment);
-					commentInstance.InitTweet(tc, ac, qc, commentTweet, false);
+					commentInstance.InitTweet(this, tc, ac, qc, commentTweet, false);
 					y -= commentInstance.GetHeight();
 				}
 			}
@@ -111,13 +111,81 @@ namespace Game.Behaviour {
 			_isAnimActive = false;
 		}
 
-		TweetView Add(float offset) {
+		TweetView Add(float offset, int overrideIndex = -1) {
 			var go = _pool.NextAvailableObject(true);
 			go.transform.SetParent(TweetViewsRoot);
 			go.transform.localPosition = new Vector3(0, offset);
 			var view = go.GetComponent<TweetView>();
-			_instances.Add(view);
+			if ( overrideIndex == -1 ) {
+				_instances.Add(view);
+			} else {
+				if ( (overrideIndex < 0) || (overrideIndex > _instances.Count) ) {
+					Debug.LogErrorFormat("Invalid overrideIndex '{0}'", overrideIndex);
+					return null;
+				}
+				_instances.Insert(overrideIndex, view);
+			}
 			return view;
+		}
+
+		public void ShowReply(TweetView tweetView) {
+			var tweetViewIndex = _instances.IndexOf(tweetView);
+			if ( tweetViewIndex < 0 ) {
+				Debug.LogError("Can't find TweetView instance");
+				return;
+			}
+			var tweet = tweetView.Tweet;
+			TweetView prevTweetView;
+			int       index;
+			if ( tweet.CommentIds.Count == 0 ) {
+				prevTweetView = tweetView;
+				index         = tweetViewIndex + 1;
+			} else {
+				prevTweetView = _instances[(tweetViewIndex + tweet.CommentIds.Count) % _instances.Count];
+				index         = (tweetViewIndex + tweet.CommentIds.Count + 1) % _instances.Count;
+			}
+			var offset = prevTweetView.transform.localPosition.y - prevTweetView.GetHeight();
+			var replyTweetView = Add(offset, index);
+			replyTweetView.TweetRoot.SetActive(false);
+			replyTweetView.ReplyRoot.SetActive(true);
+			replyTweetView.InitReply(tweet);
+			replyTweetView.transform.SetSiblingIndex(prevTweetView.transform.GetSiblingIndex() + 1);
+			var instanceOffset = Vector3.down * (replyTweetView.GetHeight() + 25f);
+			foreach ( var instance in _instances ) {
+				if ( instance == replyTweetView ) {
+					continue;
+				}
+				if ( instance.transform.localPosition.y < prevTweetView.transform.localPosition.y ) {
+					instance.transform.Translate(instanceOffset);
+				}
+			}
+		}
+
+		public void HideReply(TweetView tweetView) {
+			var tweetViewIndex = _instances.IndexOf(tweetView);
+			if ( tweetViewIndex < 0 ) {
+				Debug.LogError("Can't find TweetView instance");
+				return;
+			}
+			var tweet = tweetView.Tweet;
+			int index;
+			if ( tweet.CommentIds.Count == 0 ) {
+				index = (tweetViewIndex + 1) % _instances.Count;
+			} else {
+				index = (tweetViewIndex + tweet.CommentIds.Count + 1) % _instances.Count;
+			}
+			var replyTweetView = _instances[index];
+			_instances.RemoveAt(index);
+			var border = replyTweetView.transform.localPosition.y;
+			var height = replyTweetView.GetHeight();
+			var instanceOffset = Vector3.up * (height + 25f);
+			foreach ( var instance in _instances ) {
+				if ( instance.transform.localPosition.y <= border ) {
+					instance.transform.Translate(instanceOffset);
+				}
+			}
+			replyTweetView.PlayerCommentView.DeinitTweet();
+			_pool.ReturnObjectToPool(replyTweetView.GetComponent<PoolObject>());
 		}
 
 		public void OnDrag(PointerEventData eventData) {
