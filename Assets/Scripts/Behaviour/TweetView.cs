@@ -21,6 +21,7 @@ namespace Game.Behaviour {
 		public TMP_Text   CommentsText;
 		public Button     LikeButton;
 		public TMP_Text   LikesText;
+		public Image      RetweetIcon;
 		public Button     RetweetButton;
 		public TMP_Text   RetweetsText;
 		public GameObject TweetImageRoot;
@@ -169,6 +170,8 @@ namespace Game.Behaviour {
 				_tweet.OnCommentsCountChanged += OnCommentsCountChanged;
 				_tweet.OnLikesCountChanged    += UpdateLikesCount;
 				_tweet.OnRetweetsCountChanged += UpdateRetweetsCount;
+				_tweet.OnPlayerRetweetChanged += OnPlayerRetweetChanged;
+				OnPlayerRetweetChanged(_tweet.PlayerRetweet);
 			}
 		}
 
@@ -236,7 +239,10 @@ namespace Game.Behaviour {
 
 		void OnLikesClick() { }
 
-		void OnRetweetsClick() { }
+		void OnRetweetsClick() {
+			_tweetsController.SetPlayerRetweet(_tweet.Id, true);
+			_questController.OnRetweet(_tweet.Id);
+		}
 
 		void OnImageClick() {
 			_tweetsController.ClickImage(_tweet);
@@ -257,6 +263,10 @@ namespace Game.Behaviour {
 
 		void UpdateRetweetsCount(int retweetsCount) {
 			RetweetsText.text = retweetsCount.ToString();
+		}
+
+		void OnPlayerRetweetChanged(bool playerRetweet) {
+			RetweetIcon.color = playerRetweet ? Color.yellow : Color.white;
 		}
 	}
 }

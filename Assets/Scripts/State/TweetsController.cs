@@ -83,6 +83,18 @@ namespace Game.State {
 			tweet.Message = newMessage;
 		}
 
+		public void SetPlayerRetweet(int tweetId, bool playerRetweet) {
+			var tweet = GetTweetById(tweetId);
+			if ( tweet == null ) {
+				return;
+			}
+			if ( tweet.PlayerRetweet == playerRetweet ) {
+				return;
+			}
+			tweet.PlayerRetweet  = playerRetweet;
+			tweet.RetweetsCount += playerRetweet ? 1 : -1;
+		}
+
 		void LoadAllTweets() {
 			var tweetTypes = ((TweetType[]) Enum.GetValues(typeof(TweetType))).ToList();
 			tweetTypes.Remove(TweetType.Temporary);

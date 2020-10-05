@@ -33,6 +33,10 @@ namespace Game.State {
 
 		readonly List<BaseQuestEvent> _pendingQuestEvents = new List<BaseQuestEvent>();
 
+		int       _curRetweetChainId = -1;
+		List<int> _curRetweetChain;
+		int       _curRetweetChainIndex;
+
 		public event Action TweetsUpdated = () => {};
 		public event Action GameFinish    = () => {};
 
@@ -116,9 +120,35 @@ namespace Game.State {
 				(int.Parse(trigger.Arg) == parentTweetId));
 		}
 
+		public void OnRetweet(int tweetId) {
+			if ( _curRetweetChain != null ) {
+				if ( _curRetweetChain[_curRetweetChainIndex] == tweetId ) {
+					++_curRetweetChainIndex;
+					if ( _curRetweetChainIndex == _curRetweetChain.Count ) {
+						var chainId = _curRetweetChainId;
+						_curRetweetChainId    = -1;
+						_curRetweetChain      = null;
+						_curRetweetChainIndex = 0;
+						OnRetweetChainFinished(chainId);
+					}
+					return;
+				}
+				for ( ; _curRetweetChainIndex >= 0; --_curRetweetChainIndex ) {
+					_tweetsController.SetPlayerRetweet(_curRetweetChain[_curRetweetChainIndex], false);
+				}
+				_curRetweetChainIndex = 0;
+			}
+			_tweetsController.SetPlayerRetweet(tweetId, false);
+		}
+
 		void OnQuestStarted(int questIndex) {
 			TryFireQuestEvents(trigger =>
 				(trigger.Type == QuestEventTriggerType.QuestStarted) && (int.Parse(trigger.Arg) == questIndex));
+		}
+
+		void OnRetweetChainFinished(int chainId) {
+			TryFireQuestEvents(trigger =>
+				(trigger.Type == QuestEventTriggerType.RetweetChainFinished) && (int.Parse(trigger.Arg) == chainId));
 		}
 
 		void TryFireQuestEvents(Func<QuestEventTrigger, bool> triggerChecker) {
@@ -165,6 +195,16 @@ namespace Game.State {
 						_tweetsController.GetTweetById(questEvent.ReservedTweetId).Message);
 					break;
 				}
+				case QuestEventType.StartRetweetChain when baseQuestEvent is StartRetweetChainQuestEvent questEvent: {
+					if ( _curRetweetChain != null ) {
+						Debug.LogError("Another retweet chain is already started");
+						break;
+					}
+					_curRetweetChainId    = questEvent.ChainId;
+					_curRetweetChain      = new List<int>(questEvent.TweetIds);
+					_curRetweetChainIndex = 0;
+					break;
+				}
 				default: {
 					Debug.LogErrorFormat("Unsupported QuestEventType '{0}'", baseQuestEvent.Type.ToString());
 					break;
@@ -187,8 +227,14 @@ namespace Game.State {
 			_questIndex++;
 
 			if ( _pendingQuestEvents.Count > 0 ) {
-				Debug.LogErrorFormat("Not all quest events fired");
+				Debug.LogError("Not all quest events fired");
 				_pendingQuestEvents.Clear();
+			}
+			if ( _curRetweetChain != null ) {
+				Debug.LogError("Retweet chain left unfinished");
+				_curRetweetChainId    = -1;
+				_curRetweetChain      = null;
+				_curRetweetChainIndex = 0;
 			}
 			var questInfo = _questCollection.TryGetQuestInfo(_questIndex);
 			if ( questInfo != null ) {

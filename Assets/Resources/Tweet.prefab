@@ -704,7 +704,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 295, y: -177}
+  m_AnchoredPosition: {x: 295, y: -62.5}
   m_SizeDelta: {x: 590, y: 354}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &3504050982096454643
@@ -1033,7 +1033,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 1}
   m_AnchorMax: {x: 0.5, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 590, y: 354}
+  m_SizeDelta: {x: 590, y: 125}
   m_Pivot: {x: 0.5, y: 1}
 --- !u!114 &7184437611340422983
 MonoBehaviour:
@@ -1054,6 +1054,7 @@ MonoBehaviour:
   CommentsText: {fileID: 7222449943239747374}
   LikeButton: {fileID: 4918563991733164836}
   LikesText: {fileID: 8768609808002515958}
+  RetweetIcon: {fileID: 5314817593054615197}
   RetweetButton: {fileID: 3489263068193958999}
   RetweetsText: {fileID: 981285040327521413}
   TweetImageRoot: {fileID: 5522762216681871633}
@@ -1547,18 +1548,6 @@ PrefabInstance:
       value: 56
       objectReference: {fileID: 0}
     - target: {fileID: 1611599287171031917, guid: 5acdeac83c92a42a9b1f05900164ecb8, type: 3}
-      propertyPath: m_Color.r
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 1611599287171031917, guid: 5acdeac83c92a42a9b1f05900164ecb8, type: 3}
-      propertyPath: m_Color.g
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 1611599287171031917, guid: 5acdeac83c92a42a9b1f05900164ecb8, type: 3}
-      propertyPath: m_Color.b
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 1611599287171031917, guid: 5acdeac83c92a42a9b1f05900164ecb8, type: 3}
       propertyPath: m_Sprite
       value: 
       objectReference: {fileID: 21300000, guid: 48bdd91c214d14b3f995b43130352fb2, type: 3}
@@ -1681,6 +1670,17 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &5314817593054615197 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 1611599287171031917, guid: 5acdeac83c92a42a9b1f05900164ecb8, type: 3}
+  m_PrefabInstance: {fileID: 6890379277718418928}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!114 &981285040327521413 stripped

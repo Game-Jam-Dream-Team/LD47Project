@@ -5,5 +5,6 @@ namespace Game.Common.Quests {
 		RemoveTweet        = 2,
 		ChangeTweetImage   = 3,
 		ChangeTweetMessage = 4,
+		StartRetweetChain  = 5,
 	}
 }
