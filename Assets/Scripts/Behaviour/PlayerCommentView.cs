@@ -39,6 +39,7 @@ namespace Game.Behaviour {
 				: TweetType.Temporary;
 			var tweet = new Tweet(tweetId, type, senderId, message, -1, new List<int>());
 			GameState.Instance.TweetsController.AddComment(_mainTweet, tweet);
+			GameState.Instance.QuestController.OnCommentPosted(_mainTweet.Id);
 			InputField.text = string.Empty;
 			SendMessageUpwards("UpdateLayoutDelayed", SendMessageOptions.DontRequireReceiver);
 		}

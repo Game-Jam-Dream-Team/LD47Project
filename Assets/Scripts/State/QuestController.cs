@@ -110,6 +110,12 @@ namespace Game.State {
 				(trigger.Type == QuestEventTriggerType.ImageShowFinished) && (int.Parse(trigger.Arg) == tweetId));
 		}
 
+		public void OnCommentPosted(int parentTweetId) {
+			TryFireQuestEvents(trigger =>
+				(trigger.Type == QuestEventTriggerType.PlayerCommentPosted) &&
+				(int.Parse(trigger.Arg) == parentTweetId));
+		}
+
 		void OnQuestStarted(int questIndex) {
 			TryFireQuestEvents(trigger =>
 				(trigger.Type == QuestEventTriggerType.QuestStarted) && (int.Parse(trigger.Arg) == questIndex));
