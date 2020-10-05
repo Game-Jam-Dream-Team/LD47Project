@@ -168,6 +168,7 @@ MonoBehaviour:
   TweetSentClip: {fileID: 8300000, guid: 5a06d430841b645cabc5cc2055a9187d, type: 3}
   QuestFinishedClip: {fileID: 8300000, guid: 19d7ed03a97684215944641705e7c895, type: 3}
   InitialGifClip: {fileID: 8300000, guid: 0d6b4147beb9245adb7f4b17375a2d9c, type: 3}
+  FinalClip: {fileID: 8300000, guid: 24f33bb7c60fa4d32ab496d0f18d4acb, type: 3}
 --- !u!82 &526142436
 AudioSource:
   m_ObjectHideFlags: 0

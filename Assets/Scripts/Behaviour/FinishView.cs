@@ -20,6 +20,7 @@ namespace Game.Behaviour {
 
 		void OnGameFinish() {
 			gameObject.SetActive(true);
+			SoundSource.Current.PlayFinal();
 		}
 
 		void Start() {

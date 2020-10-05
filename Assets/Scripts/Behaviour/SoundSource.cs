@@ -11,6 +11,7 @@ namespace Game.Behaviour {
 		public AudioClip TweetSentClip;
 		public AudioClip QuestFinishedClip;
 		public AudioClip InitialGifClip;
+		public AudioClip FinalClip;
 
 		public void Awake() {
 			Current = this;
@@ -35,6 +36,10 @@ namespace Game.Behaviour {
 
 		public void PlayInitialGif() {
 			TryPlayClip(InitialGifClip);
+		}
+
+		public void PlayFinal() {
+			TryPlayClip(FinalClip);
 		}
 
 		void TryPlayClip(AudioClip clip) {
