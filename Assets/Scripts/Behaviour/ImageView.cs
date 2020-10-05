@@ -58,6 +58,9 @@ namespace Game.Behaviour {
 		}
 
 		void Open(Tweet tweet) {
+			if ( tweet.Id == 1000 ) {
+				SoundSource.Current.PlayInitialGif();
+			}
 			Background.SetActive(true);
 			_curTweet = tweet;
 			_sprites  = _tweetSpritesCollection.GetTweetSprites(tweet.ImageId);

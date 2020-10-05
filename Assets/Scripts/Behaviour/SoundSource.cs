@@ -10,6 +10,7 @@ namespace Game.Behaviour {
 		public AudioClip ClickClip;
 		public AudioClip TweetSentClip;
 		public AudioClip QuestFinishedClip;
+		public AudioClip InitialGifClip;
 
 		public void Awake() {
 			Current = this;
@@ -30,6 +31,10 @@ namespace Game.Behaviour {
 
 		public void PlayQuestFinished() {
 			TryPlayClip(QuestFinishedClip);
+		}
+
+		public void PlayInitialGif() {
+			TryPlayClip(InitialGifClip);
 		}
 
 		void TryPlayClip(AudioClip clip) {
