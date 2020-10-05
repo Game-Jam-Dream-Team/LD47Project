@@ -166,6 +166,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ClickClip: {fileID: 8300000, guid: 85fe1c06bbc834c36a95079f48ac2c0a, type: 3}
   TweetSentClip: {fileID: 8300000, guid: 5a06d430841b645cabc5cc2055a9187d, type: 3}
+  QuestFinishedClip: {fileID: 8300000, guid: 19d7ed03a97684215944641705e7c895, type: 3}
 --- !u!82 &526142436
 AudioSource:
   m_ObjectHideFlags: 0

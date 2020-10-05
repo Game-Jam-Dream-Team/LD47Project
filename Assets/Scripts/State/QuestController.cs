@@ -285,6 +285,7 @@ namespace Game.State {
 				OnQuestStarted();
 			}
 			SetupCurrentTweets();
+			SoundSource.Current.PlayQuestFinished();
 		}
 
 		void SetupCurrentTweets() {
