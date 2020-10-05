@@ -12,15 +12,15 @@ namespace Game.Behaviour {
 			if ( !char.IsNumber(ch) || (pos >= 10) ) {
 				return '\0';
 			}
-			var newText = text;
-			var newPos = pos;
-			newText = (pos >= newText.Length - 4)
-				? newText.Remove(pos, 1).Insert(pos, ch.ToString())
-				: newText.Insert(newPos, ch.ToString());
-			if ( DateTime.TryParseExact(newText, new[] { "dd/mm/yyyy", "d/mm/yyyy", "dd/m/yyyy", "d/m/yyyy" },
-				CultureInfo.InvariantCulture, DateTimeStyles.None, out _) ) {
+			var newText = text.Insert(pos, ch.ToString());
+			if ( DateTime.TryParseExact(text.Insert(pos, ch.ToString()),
+				     new[] { "dd/mm/yyyy", "d/mm/yyyy", "dd/m/yyyy", "d/m/yyyy" },
+				     CultureInfo.InvariantCulture, DateTimeStyles.None, out _)
+			     || DateTime.TryParseExact(newText = text.Remove(pos, 1).Insert(pos, ch.ToString()),
+				     new[] { "dd/mm/yyyy", "d/mm/yyyy", "dd/m/yyyy", "d/m/yyyy" },
+				     CultureInfo.InvariantCulture, DateTimeStyles.None, out _) ) {
 				text = newText;
-				pos  = ++newPos;
+				++pos;
 			} else {
 				return '\0';
 			}
