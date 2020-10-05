@@ -187,10 +187,14 @@ namespace Game.Behaviour {
 			LayoutGroup.padding.left     = isRoot ? 0 : 100;
 			RightAreaTransform.sizeDelta = new Vector2(isRoot ? 490 : 390, RightAreaTransform.sizeDelta.y);
 
+			CommentButton.gameObject.SetActive(isRoot);
+
 			if ( tweet.Type == TweetType.Temporary ) {
 				StartCoroutine(TempDisappearCoro());
-			} else if ( isRoot ) {
-				_tweet.OnCommentsCountChanged += OnCommentsCountChanged;
+			} else {
+				if ( isRoot ) {
+					_tweet.OnCommentsCountChanged += OnCommentsCountChanged;
+				}
 				_tweet.OnLikesCountChanged    += UpdateLikesCount;
 				_tweet.OnRetweetsCountChanged += UpdateRetweetsCount;
 				_tweet.OnPlayerLikeChanged    += OnPlayerLikeChanged;
