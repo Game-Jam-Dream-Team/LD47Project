@@ -19,6 +19,7 @@ namespace Game.Behaviour {
 		public TMP_Text   MessageText;
 		public Button     CommentButton;
 		public TMP_Text   CommentsText;
+		public Image      LikeIcon;
 		public Button     LikeButton;
 		public TMP_Text   LikesText;
 		public Image      RetweetIcon;
@@ -180,7 +181,9 @@ namespace Game.Behaviour {
 				_tweet.OnCommentsCountChanged += OnCommentsCountChanged;
 				_tweet.OnLikesCountChanged    += UpdateLikesCount;
 				_tweet.OnRetweetsCountChanged += UpdateRetweetsCount;
+				_tweet.OnPlayerLikeChanged    += OnPlayerLikeChanged;
 				_tweet.OnPlayerRetweetChanged += OnPlayerRetweetChanged;
+				OnPlayerLikeChanged(_tweet.PlayerLike);
 				OnPlayerRetweetChanged(_tweet.PlayerRetweet);
 			}
 		}
@@ -253,11 +256,16 @@ namespace Game.Behaviour {
 		void OnCommentsClick() {
 		}
 
-		void OnLikesClick() { }
+		void OnLikesClick() {
+			var state = _tweetsController.GetPlayerLike(_tweet.Id);
+			_tweetsController.SetPlayerLike(_tweet.Id, !state);
+		}
 
 		void OnRetweetsClick() {
-			_tweetsController.SetPlayerRetweet(_tweet.Id, true);
-			_questController.OnRetweet(_tweet.Id);
+			var state = _tweetsController.GetPlayerRetweet(_tweet.Id);
+			_tweetsController.SetPlayerRetweet(_tweet.Id, !state);
+			// TODO: rewrite me
+			//_questController.OnRetweet(_tweet.Id);
 		}
 
 		void OnImageClick() {
@@ -280,6 +288,10 @@ namespace Game.Behaviour {
 
 		void UpdateRetweetsCount(int retweetsCount) {
 			RetweetsText.text = retweetsCount.ToString();
+		}
+
+		void OnPlayerLikeChanged(bool playerLike) {
+			LikeIcon.color = playerLike ? Color.yellow : Color.white;
 		}
 
 		void OnPlayerRetweetChanged(bool playerRetweet) {

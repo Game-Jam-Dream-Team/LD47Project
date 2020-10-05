@@ -87,6 +87,14 @@ namespace Game.State {
 			tweet.Message = newMessage;
 		}
 
+		public bool GetPlayerRetweet(int tweetId) {
+			var tweet = GetTweetById(tweetId);
+			if ( tweet == null ) {
+				return false;
+			}
+			return tweet.PlayerRetweet;
+		}
+
 		public void SetPlayerRetweet(int tweetId, bool playerRetweet) {
 			var tweet = GetTweetById(tweetId);
 			if ( tweet == null ) {
@@ -97,6 +105,26 @@ namespace Game.State {
 			}
 			tweet.PlayerRetweet  = playerRetweet;
 			tweet.RetweetsCount += playerRetweet ? 1 : -1;
+		}
+
+		public bool GetPlayerLike(int tweetId) {
+			var tweet = GetTweetById(tweetId);
+			if ( tweet == null ) {
+				return false;
+			}
+			return tweet.PlayerLike;
+		}
+
+		public void SetPlayerLike(int tweetId, bool playerLike) {
+			var tweet = GetTweetById(tweetId);
+			if ( tweet == null ) {
+				return;
+			}
+			if ( tweet.PlayerLike == playerLike ) {
+				return;
+			}
+			tweet.PlayerLike = playerLike;
+			tweet.LikesCount += playerLike ? 1 : -1;
 		}
 
 		void LoadAllTweets() {

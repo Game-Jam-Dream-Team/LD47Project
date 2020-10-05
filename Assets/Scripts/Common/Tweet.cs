@@ -17,6 +17,7 @@ namespace Game.Common {
 		int _retweetsCount;
 
 		bool _playerRetweet;
+		bool _playerLike;
 
 		public int CommentsCount => CommentIds.Count;
 
@@ -64,11 +65,23 @@ namespace Game.Common {
 			}
 		}
 
+		public bool PlayerLike {
+			get => _playerLike;
+			set {
+				if ( _playerLike == value ) {
+					return;
+				}
+				_playerLike = value;
+				OnPlayerLikeChanged?.Invoke(_playerLike);
+			}
+		}
+
 		public event Action<int>    OnCommentsCountChanged;
 		public event Action<int>    OnLikesCountChanged;
 		public event Action<int>    OnRetweetsCountChanged;
 		public event Action<string> OnMessageChanged;
 		public event Action<bool>   OnPlayerRetweetChanged;
+		public event Action<bool>   OnPlayerLikeChanged;
 
 		public Tweet(int id, TweetType type, int senderId, string message, int imageId, List<int> commentIds) {
 			Id         = id;
