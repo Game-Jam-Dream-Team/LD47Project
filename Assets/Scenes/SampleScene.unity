@@ -164,8 +164,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 274536ae3aba24ebf9395c64503385f1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  SettingsWindow: {fileID: 1043870232}
-  ClickClip: {fileID: 0}
+  ClickClip: {fileID: 8300000, guid: 85fe1c06bbc834c36a95079f48ac2c0a, type: 3}
 --- !u!82 &526142436
 AudioSource:
   m_ObjectHideFlags: 0
@@ -522,17 +521,6 @@ Camera:
   m_CorrespondingSourceObject: {fileID: 5785396497930902172, guid: b206c5cc802d74c8c83f01f05b6378ea, type: 3}
   m_PrefabInstance: {fileID: 5785396497578386422}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &1043870232 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 1736119396426959808, guid: 2c0407e1bd4f541598c344abfc8492de, type: 3}
-  m_PrefabInstance: {fileID: 955818468790777077}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5924a185b06564a6c817cc211260b283, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!224 &2121335082 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 955818468294866399, guid: 2c0407e1bd4f541598c344abfc8492de, type: 3}
