@@ -60,6 +60,7 @@ namespace Game.Behaviour {
 			tc.AddTweet(tweet);
 			NewPostInputField.text = string.Empty;
 			_mainScreenController.TryHideNewPostScreen();
+			SoundSource.Current.PlayTweetSent();
 		}
 	}
 }

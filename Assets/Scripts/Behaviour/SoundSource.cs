@@ -8,6 +8,7 @@ namespace Game.Behaviour {
 		public static SoundSource Current { get; private set; }
 
 		public AudioClip ClickClip;
+		public AudioClip TweetSentClip;
 
 		public void Awake() {
 			Current = this;
@@ -19,8 +20,16 @@ namespace Game.Behaviour {
 		}
 
 		public void PlayClick() {
-			if ( ClickClip ) {
-				_source.PlayOneShot(ClickClip);
+			TryPlayClip(ClickClip);
+		}
+
+		public void PlayTweetSent() {
+			TryPlayClip(TweetSentClip);
+		}
+
+		void TryPlayClip(AudioClip clip) {
+			if ( clip ) {
+				_source.PlayOneShot(clip);
 			}
 		}
 	}
