@@ -11,6 +11,7 @@ namespace Game.Behaviour {
 		public override void OnPointerDown(PointerEventData eventData) {
 			base.OnPointerDown(eventData);
 			OnPressed?.Invoke();
+			SoundSource.Current.PlayClick();
 		}
 
 		public override void OnPointerUp(PointerEventData eventData) {

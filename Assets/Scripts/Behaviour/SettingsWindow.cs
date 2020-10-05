@@ -26,10 +26,12 @@ namespace Game.Behaviour {
 		void Show() {
 			gameObject.SetActive(true);
 			AgeBlock.SetActive(IsAgeShouldBeShown());
+			SoundSource.Current.PlayClick();
 		}
 
 		void Hide() {
 			gameObject.SetActive(false);
+			SoundSource.Current.PlayClick();
 		}
 
 		bool IsAgeShouldBeShown() {
