@@ -28,6 +28,14 @@ MonoBehaviour:
     QuestEvents:
     - id: 3
     - id: 4
+  - ReplyId: 0
+    CorrectAnswer: 2
+    OneShotGlitch: 1
+    BaseGlitchIncrease: 0.001
+    QuestEvents:
+    - id: 5
+    - id: 6
+    - id: 7
   references:
     version: 1
     00000000:
@@ -79,3 +87,33 @@ MonoBehaviour:
         BaseGlitchIncrease: 0
         TweetId: 2001
         ReservedTweetId: 2002
+    00000005:
+      type: {class: ChangeSenderAvatarQuestEvent, ns: Game.Common.Quests, asm: Assembly-CSharp}
+      data:
+        Trigger:
+          Type: 1
+          Arg: 
+        OneShotGlitch: 0
+        BaseGlitchIncrease: 0
+        SenderId: 3000
+        NewAvatar: {fileID: 21300000, guid: 453f4605cb1bb4aa1bd973826b027d0d, type: 3}
+    00000006:
+      type: {class: ChangeTweetMessageQuestEvent, ns: Game.Common.Quests, asm: Assembly-CSharp}
+      data:
+        Trigger:
+          Type: 1
+          Arg: 
+        OneShotGlitch: 0
+        BaseGlitchIncrease: 0
+        TweetId: 3000
+        ReservedTweetId: 3001
+    00000007:
+      type: {class: SpawnCommentQuestEvent, ns: Game.Common.Quests, asm: Assembly-CSharp}
+      data:
+        Trigger:
+          Type: 2
+          Arg: 3000
+        OneShotGlitch: 0
+        BaseGlitchIncrease: 0
+        ParentTweetId: 3000
+        TweetId: 3002

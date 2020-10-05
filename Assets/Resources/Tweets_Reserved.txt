@@ -5,3 +5,11 @@
 2001
 #id:2002
 Take my advice: stop BLOBing and go outside to look at the sky. There are so many stars. You'll thank me later
+######
+3000
+#id:3001
+I hate people, I don't care what you say
+######
+3000
+#id:3002
+What? You know what? I should' ve deleted this stupid app like 2 years ago!! GOODBYE
