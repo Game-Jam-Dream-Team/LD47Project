@@ -72,20 +72,21 @@ namespace Game.Behaviour {
 			}
 			_instances.Clear();
 			var tc = GameState.Instance.TweetsController;
+			var ac = GameState.Instance.AgeController;
 			var qc = GameState.Instance.QuestController;
 			var y  = 0.0f;
 			foreach ( var tweet in qc.CurrentTweets ) {
 				var tweetInstance = Add(y);
 				tweetInstance.TweetRoot.SetActive(true);
 				tweetInstance.ReplyRoot.SetActive(false);
-				tweetInstance.InitTweet(tc, qc, tweet);
+				tweetInstance.InitTweet(tc, ac, qc, tweet);
 				y -= tweetInstance.GetHeight();
 				foreach ( var comment in tweet.CommentIds ) {
 					var commentInstance = Add(y);
 					commentInstance.TweetRoot.SetActive(true);
 					commentInstance.ReplyRoot.SetActive(false);
 					var commentTweet = tc.GetTweetById(comment);
-					commentInstance.InitTweet(tc, qc, commentTweet, false);
+					commentInstance.InitTweet(tc, ac, qc, commentTweet, false);
 					y -= commentInstance.GetHeight();
 				}
 			}

@@ -16,6 +16,7 @@ namespace Game.Behaviour {
 		[Serializable]
 		public sealed class TweetSpriteInfo {
 			public int               Id;
+			public bool              AgeRestricted;
 			public Sprite            Sprite;
 			public List<TimedSprite> Sprites;
 		}
@@ -34,6 +35,16 @@ namespace Game.Behaviour {
 				TweetId = tweetId,
 				Sprite  = overrideSprite
 			});
+		}
+
+		public bool IsAgeRestricted(int tweetSpriteId) {
+			foreach ( var tweetSpriteInfo in TweetSpriteInfos ) {
+				if ( tweetSpriteInfo.Id == tweetSpriteId ) {
+					return tweetSpriteInfo.AgeRestricted;
+				}
+			}
+			Debug.LogErrorFormat("Can't find TweetSpriteInfo for id '{0}'", tweetSpriteId);
+			return false;
 		}
 
 		public Sprite GetTweetSprite(int tweetId, int tweetSpriteId) {

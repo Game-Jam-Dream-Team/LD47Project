@@ -27,6 +27,7 @@ namespace Game.Behaviour {
 		public GameObject TweetImageRoot;
 		public Image      TweetImage;
 		public Button     TweetImageButton;
+		public GameObject AgeRestrictionRoot;
 		[Space]
 		public HorizontalLayoutGroup LayoutGroup;
 		public RectTransform         RightAreaTransform;
@@ -36,6 +37,7 @@ namespace Game.Behaviour {
 		public PlayerCommentView PlayerCommentView;
 
 		TweetsController _tweetsController;
+		AgeController    _ageController;
 		QuestController  _questController;
 
 		Tweet _tweet;
@@ -64,6 +66,7 @@ namespace Game.Behaviour {
 				PlayerCommentView.DeinitTweet();
 			}
 			var tc = GameState.Instance.TweetsController;
+			var ac = GameState.Instance.AgeController;
 			var qc = GameState.Instance.QuestController;
 			var totalTweets = qc.CurrentTweets.Length * 2; // with fake tweets for replies
 			foreach ( var tmpTweet in qc.CurrentTweets ) {
@@ -110,7 +113,7 @@ namespace Game.Behaviour {
 			if ( isTweet ) {
 				TweetRoot.SetActive(true);
 				ReplyRoot.SetActive(false);
-				InitTweet(tc, qc, tweet, isRoot);
+				InitTweet(tc, ac, qc, tweet, isRoot);
 			}
 			LayoutRebuilder.ForceRebuildLayoutImmediate(transform.parent as RectTransform);
 		}
@@ -137,8 +140,10 @@ namespace Game.Behaviour {
 			_isCommonInit = true;
 		}
 
-		public void InitTweet(TweetsController tweetsController, QuestController questController, Tweet tweet, bool isRoot = true) {
+		public void InitTweet(TweetsController tweetsController, AgeController ageController,
+			QuestController questController, Tweet tweet, bool isRoot = true) {
 			_tweetsController = tweetsController;
+			_ageController    = ageController;
 			_questController  = questController;
 			_tweet            = tweet;
 
@@ -154,11 +159,16 @@ namespace Game.Behaviour {
 			UpdateLikesCount(_tweet.LikesCount);
 			UpdateRetweetsCount(_tweet.RetweetsCount);
 
+			AgeRestrictionRoot.SetActive(false);
 			if ( _tweet.ImageId == -1 ) {
 				TweetImageRoot.SetActive(false);
 			} else {
 				TweetImageRoot.SetActive(true);
 				TweetImage.sprite = _tweetSpritesCollection.GetTweetSprite(_tweet.Id, _tweet.ImageId);
+				if ( _tweetSpritesCollection.IsAgeRestricted(_tweet.ImageId) ) {
+					AgeRestrictionRoot.SetActive(!_ageController.IsAdult);
+					_ageController.OnIsAdultChanged += OnIsAdultChanged;
+				}
 			}
 
 			LayoutGroup.padding.left     = isRoot ? 0 : 100;
@@ -189,6 +199,10 @@ namespace Game.Behaviour {
 			TweetImage.sprite = newImage;
 		}
 
+		void OnIsAdultChanged(bool isAdult) {
+			AgeRestrictionRoot.SetActive(!isAdult);
+		}
+
 		void OnTweetMessageChanged(string newMessage) {
 			MessageText.text = newMessage;
 		}
@@ -213,6 +227,8 @@ namespace Game.Behaviour {
 
 				_questController.OnSenderAvatarChanged -= OnSenderAvatarChanged;
 				_questController.OnTweetImageChanged   -= OnTweetImageChanged;
+
+				_ageController.OnIsAdultChanged -= OnIsAdultChanged;
 			}
 		}
 
@@ -251,9 +267,10 @@ namespace Game.Behaviour {
 		void OnCommentsCountChanged(int commentsCount) {
 			var tweet            = _tweet;
 			var tweetsController = _tweetsController;
+			var ageController    = _ageController;
 			var questController  = _questController;
 			DeinitTweet();
-			InitTweet(tweetsController, questController, tweet);
+			InitTweet(tweetsController, ageController, questController, tweet);
 			SendMessageUpwards("UpdateLayoutDelayed", SendMessageOptions.DontRequireReceiver);
 		}
 
