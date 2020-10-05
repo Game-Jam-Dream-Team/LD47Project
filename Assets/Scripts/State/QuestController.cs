@@ -22,8 +22,9 @@ namespace Game.State {
 		readonly GlitchController   _glitchController;
 		readonly ProgressController _progressController;
 
-		QuestCollection  _questCollection;
-		SenderCollection _senderCollection;
+		QuestCollection        _questCollection;
+		SenderCollection       _senderCollection;
+		TweetSpritesCollection _tweetSpritesCollection;
 
 		QuestCollection.QuestInfo _upcomingQuestInfo;
 
@@ -36,6 +37,7 @@ namespace Game.State {
 		public event Action GameFinish    = () => {};
 
 		public event Action<int, Sprite> OnSenderAvatarChanged;
+		public event Action<int, Sprite> OnTweetImageChanged;
 
 		public Tweet[] CurrentTweets { get; private set; } = new Tweet[0];
 
@@ -46,8 +48,9 @@ namespace Game.State {
 		}
 
 		public override void Init() {
-			_questCollection  = Resources.Load<QuestCollection>("QuestCollection");
-			_senderCollection = Resources.Load<SenderCollection>("SenderCollection");
+			_questCollection        = Resources.Load<QuestCollection>("QuestCollection");
+			_senderCollection       = Resources.Load<SenderCollection>("SenderCollection");
+			_tweetSpritesCollection = Resources.Load<TweetSpritesCollection>("TweetSpritesCollection");
 			SetupCurrentTweets();
 
 			var questInfo = _questCollection.TryGetQuestInfo(_questIndex);
@@ -130,6 +133,11 @@ namespace Game.State {
 					_tweetsController.RemoveTweet(_tweetsController.GetTweetById(questEvent.TweetId));
 					SetupCurrentTweets();
 					TweetsUpdated();
+					break;
+				}
+				case QuestEventType.ChangeTweetImage when baseQuestEvent is ChangeTweetImageQuestEvent questEvent: {
+					_tweetSpritesCollection.SetOverrideSprite(questEvent.TweetId, questEvent.NewImage);
+					OnTweetImageChanged?.Invoke(questEvent.TweetId, questEvent.NewImage);
 					break;
 				}
 				default: {

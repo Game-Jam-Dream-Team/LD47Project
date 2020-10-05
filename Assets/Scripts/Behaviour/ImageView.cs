@@ -67,7 +67,7 @@ namespace Game.Behaviour {
 				SetupTimedSprite(_index);
 			} else {
 				_sprites = null;
-				Image.sprite = _tweetSpritesCollection.GetTweetSprite(tweet.ImageId);
+				Image.sprite = _tweetSpritesCollection.GetTweetSprite(_curTweet.Id, tweet.ImageId);
 			}
 			Image.enabled = true;
 		}

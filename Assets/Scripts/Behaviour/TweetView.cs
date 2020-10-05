@@ -141,6 +141,7 @@ namespace Game.Behaviour {
 			_tweet            = tweet;
 
 			_questController.OnSenderAvatarChanged += OnSenderAvatarChanged;
+			_questController.OnTweetImageChanged   += OnTweetImageChanged;
 
 			var senderInfo = _senderCollection.GetSenderInfo(_tweet.SenderId);
 			Avatar.sprite = senderInfo.OverrideAvatar ? senderInfo.OverrideAvatar : senderInfo.Avatar;
@@ -154,7 +155,7 @@ namespace Game.Behaviour {
 				TweetImageRoot.SetActive(false);
 			} else {
 				TweetImageRoot.SetActive(true);
-				TweetImage.sprite = _tweetSpritesCollection.GetTweetSprite(_tweet.ImageId);
+				TweetImage.sprite = _tweetSpritesCollection.GetTweetSprite(_tweet.Id, _tweet.ImageId);
 			}
 
 			LayoutGroup.padding.left     = isRoot ? 0 : 100;
@@ -176,6 +177,13 @@ namespace Game.Behaviour {
 			Avatar.sprite = newAvatar;
 		}
 
+		void OnTweetImageChanged(int tweetId, Sprite newImage) {
+			if ( _tweet.Id != tweetId ) {
+				return;
+			}
+			TweetImage.sprite = newImage;
+		}
+
 		IEnumerator TempDisappearCoro() {
 			yield return new WaitForSeconds(2f);
 			_tweetsController.RemoveTweet(_tweet);
@@ -194,6 +202,7 @@ namespace Game.Behaviour {
 				_tweet = null;
 
 				_questController.OnSenderAvatarChanged -= OnSenderAvatarChanged;
+				_questController.OnTweetImageChanged   -= OnTweetImageChanged;
 			}
 		}
 

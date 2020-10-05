@@ -20,9 +20,28 @@ namespace Game.Behaviour {
 			public List<TimedSprite> Sprites;
 		}
 
+		sealed class OverrideSprite {
+			public int    TweetId;
+			public Sprite Sprite;
+		}
+
 		public List<TweetSpriteInfo> TweetSpriteInfos = new List<TweetSpriteInfo>();
 
-		public Sprite GetTweetSprite(int tweetSpriteId) {
+		readonly List<OverrideSprite> _overrideSprites = new List<OverrideSprite>();
+
+		public void SetOverrideSprite(int tweetId, Sprite overrideSprite) {
+			_overrideSprites.Add(new OverrideSprite {
+				TweetId = tweetId,
+				Sprite  = overrideSprite
+			});
+		}
+
+		public Sprite GetTweetSprite(int tweetId, int tweetSpriteId) {
+			foreach ( var overrideSprite in _overrideSprites ) {
+				if ( overrideSprite.TweetId == tweetId ) {
+					return overrideSprite.Sprite;
+				}
+			}
 			foreach ( var tweetSpriteInfo in TweetSpriteInfos ) {
 				if ( tweetSpriteInfo.Id == tweetSpriteId ) {
 					return tweetSpriteInfo.Sprite;
