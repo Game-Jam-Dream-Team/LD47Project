@@ -1,6 +1,9 @@
-﻿using TMPro;
+﻿using System;
+
 using UnityEngine;
 using UnityEngine.UI;
+
+using TMPro;
 
 namespace Game.Behaviour {
 	public class SettingsWindow : MonoBehaviour {
@@ -14,6 +17,7 @@ namespace Game.Behaviour {
 			AgeBlock.SetActive(false);
 			SettingsButton.onClick.AddListener(Show);
 			BackButton.onClick.AddListener(Hide);
+			AgeInput.text = DateTime.Now.ToString("dd/MM/yyyy");
 			AgeInput.onValueChanged.AddListener(OnAgeChanged);
 		}
 
@@ -28,7 +32,7 @@ namespace Game.Behaviour {
 
 		bool IsAgeShouldBeShown() {
 			// TODO: check condition
-			return false;
+			return true;
 		}
 
 		void OnAgeChanged(string value) {
