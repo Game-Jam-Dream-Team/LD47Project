@@ -7,6 +7,8 @@ using System.Linq;
 using System.Text;
 using Game.Common;
 
+using Random = UnityEngine.Random;
+
 namespace Game.State {
 	public sealed class TweetsController : BaseController {
 		public const int PlayerId = 0;
@@ -15,6 +17,8 @@ namespace Game.State {
 		const string Separator                 = "######";
 		const string TweetIdPrefix             = "#id:";
 		const string TweetCommentIdsPrefix     = "#commentIds:";
+		const string TweetLikesPrefix          = "#likes:";
+		const string TweetRetweetsPrefix       = "#retweets:";
 
 		readonly List<Tweet> _allTweets     = new List<Tweet>();
 		readonly List<Tweet> _allRootTweets = new List<Tweet>();
@@ -116,6 +120,8 @@ namespace Game.State {
 			var tweetId              = -1;
 			var tweetSenderId        = -1;
 			var tweetImageId         = -1;
+			var tweetLikes           = Random.Range(10, 1000);
+			var tweetRetweets        = Random.Range(2, 100);
 			var tweetCommentIds      = new List<int>();
 			using ( var sr = new StringReader(tweetsContainer.text) ) {
 				while ( true ) {
@@ -123,18 +129,22 @@ namespace Game.State {
 					if ( line == null ) {
 						if ( composedTweetMessage.Length > 0 ) {
 							var message = composedTweetMessage.ToString();
-							AddTweet(tweetId, tweetType, tweetSenderId, message, tweetImageId, tweetCommentIds);
+							AddTweet(tweetId, tweetType, tweetSenderId, message, tweetImageId, tweetCommentIds,
+								tweetLikes, tweetRetweets);
 						}
 						break;
 					}
 					if ( line == Separator ) {
 						if ( composedTweetMessage.Length > 0 ) {
 							var message = composedTweetMessage.ToString();
-							AddTweet(tweetId, tweetType, tweetSenderId, message, tweetImageId, tweetCommentIds);
+							AddTweet(tweetId, tweetType, tweetSenderId, message, tweetImageId, tweetCommentIds,
+								tweetLikes, tweetRetweets);
 							composedTweetMessage.Clear();
 							tweetId       = -1;
 							tweetSenderId = -1;
 							tweetImageId  = -1;
+							tweetLikes    = Random.Range(10, 1000);
+							tweetRetweets = Random.Range(2, 100);
 							tweetCommentIds.Clear();
 						}
 					} else {
@@ -161,6 +171,18 @@ namespace Game.State {
 								}
 								tweetCommentIds.Add(commentId);
 							}
+						} else if ( line.StartsWith(TweetLikesPrefix) ) {
+							if ( !int.TryParse(
+								line.Substring(TweetLikesPrefix.Length, line.Length - TweetLikesPrefix.Length),
+								out tweetLikes) ) {
+								Debug.LogErrorFormat("Can't parse tweet likes from line '{0}'", line);
+							}
+						} else if ( line.StartsWith(TweetRetweetsPrefix) ) {
+							if ( !int.TryParse(
+								line.Substring(TweetRetweetsPrefix.Length, line.Length - TweetRetweetsPrefix.Length),
+								out tweetRetweets) ) {
+								Debug.LogErrorFormat("Can't parse tweet retweets from line '{0}'", line);
+							}
 						} else {
 							composedTweetMessage.AppendLine(line);
 						}
@@ -169,11 +191,16 @@ namespace Game.State {
 			}
 		}
 
-		void AddTweet(int tweetId, TweetType type, int senderId, string message, int imageId, List<int> commentIds) {
+		void AddTweet(int tweetId, TweetType type, int senderId, string message, int imageId, List<int> commentIds,
+			int likes, int retweets) {
 			if ( tweetId == -1 ) {
 				tweetId = message.GetHashCode();
 			}
-			var tweet = new Tweet(tweetId, type, senderId, message, imageId, new List<int>(commentIds));
+			var tweet =
+				new Tweet(tweetId, type, senderId, message, imageId, new List<int>(commentIds)) {
+					LikesCount    = likes,
+					RetweetsCount = retweets
+				};
 			_allTweets.Add(tweet);
 		}
 	}
