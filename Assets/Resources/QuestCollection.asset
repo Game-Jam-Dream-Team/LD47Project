@@ -45,6 +45,14 @@ MonoBehaviour:
     - id: 9
     - id: 10
     - id: 11
+  - ReplyId: 0
+    CorrectAnswer: 6
+    OneShotGlitch: 1
+    BaseGlitchIncrease: 0.001
+    QuestEvents:
+    - id: 12
+    - id: 13
+    - id: 14
   references:
     version: 1
     00000000:
@@ -167,3 +175,35 @@ MonoBehaviour:
         OneShotGlitch: 0
         BaseGlitchIncrease: 0
         NewCanChangeAge: 1
+    0000000C:
+      type: {class: ChangeTweetImageQuestEvent, ns: Game.Common.Quests, asm: Assembly-CSharp}
+      data:
+        Trigger:
+          Type: 1
+          Arg: 
+        OneShotGlitch: 0
+        BaseGlitchIncrease: 0
+        TweetId: 5000
+        NewImage: {fileID: 21300000, guid: 59fd9fc67ee584ec2b6a8480d64c2e69, type: 3}
+        AgeRestricted: 0
+    0000000D:
+      type: {class: StartRetweetChainQuestEvent, ns: Game.Common.Quests, asm: Assembly-CSharp}
+      data:
+        Trigger:
+          Type: 1
+          Arg: 
+        OneShotGlitch: 0
+        BaseGlitchIncrease: 0
+        ChainId: 5000
+        TweetIds: 1027000011270000122700001327000014270000
+    0000000E:
+      type: {class: ChangeTweetImageQuestEvent, ns: Game.Common.Quests, asm: Assembly-CSharp}
+      data:
+        Trigger:
+          Type: 3
+          Arg: 5000
+        OneShotGlitch: 1
+        BaseGlitchIncrease: 0
+        TweetId: 5000
+        NewImage: {fileID: 21300000, guid: 2057f3dd3cb4f496f9b368d21ae8a0e6, type: 3}
+        AgeRestricted: 0

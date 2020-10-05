@@ -32,6 +32,13 @@ namespace Game.Behaviour {
 		readonly List<OverrideSprite> _overrideSprites = new List<OverrideSprite>();
 
 		public void SetOverrideSprite(int tweetId, Sprite overrideSprite, bool ageRestricted) {
+			foreach ( var os in _overrideSprites ) {
+				if ( os.TweetId == tweetId ) {
+					os.Sprite        = overrideSprite;
+					os.AgeRestricted = ageRestricted;
+					return;
+				}
+			}
 			_overrideSprites.Add(new OverrideSprite {
 				TweetId       = tweetId,
 				Sprite        = overrideSprite,
